@@ -1,8 +1,35 @@
-﻿@model TModel
+﻿@model List<FirstProject.Models.ViewModels.ChooseUniversityModelView>;
 
 @{
     ViewBag.Title = "Choose Uni";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+<div class="table-responsive">
+    <form asp-action="Index" method="get">
+        <table class="table table-responsive table-striped">
+            <thead>
+            <tr class="bg-light">
+                <th scope="col" width="10%">Choosed</th>
+                <th scope="col" width="30%">Univeristy Name</th>
+                <th scope="col" width="30%">Employed</th>
+                <th scope="col" width="30%">Total Faculties</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var uni in Model)
+            {
+                <tr>
+
+                    <th scope="col" width="10%"><input class="form-check-input" name="UniversityName" type="radio" asp-controller="University" value="@uni.UniversityName"/></th>
+                    <th scope="col" width="30%">@Html.DisplayFor(i => uni.UniversityName)</th>
+                    <th scope="col" width="30%">@Html.DisplayFor(i => uni.Employed)</th>
+                    <th scope="col" width="30%">@Html.DisplayFor(i => uni.FacultiesCount)</th>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <input class="btn btn-success" type="submit" value="Choose"/>
+    </form>
+
+</div>

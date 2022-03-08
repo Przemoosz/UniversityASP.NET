@@ -1,0 +1,110 @@
+﻿@model FirstProject.Models.University
+
+@{
+    ViewData["Title"] = Model.UniversityName;
+    Layout = "_Layout";
+    Dictionary<int, Faculty> faculties = FirstProject.Models.ViewModels.DisplayFacultiesModel.InitDictionary(Model.Faculties);
+    int index = 0;
+}
+@if (faculties.Count == 0)
+{
+    <div class="container">
+        <div class="row text-center">
+            <h3>No Faculty avaible!</h3>
+            <p>Create new and attach to @Model.UniversityName Univesrity <a asp-controller="Faculty" asp-action="Create">Create Here!</a></p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container">
+    <div class="row mb-3 text-center">
+        <h3>@Model.UniversityName Faculties</h3>
+    </div>
+    @for (int i = 0; i < (int) ViewData["Rows"]; i++)
+    {
+        <div class="row">
+            @for (int a = 0; a < 3; a++)
+            {
+                <div class="col-4 bg-light border border-4 border-white">
+                    <div class="container">
+                        <div class="row text-center">
+                            <h4>@faculties[index + a].FacultyName</h4>
+                        </div>
+                        <div class="row">
+                            <table class="table-borderless">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        Faculty Information:
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="text-start">@Html.DisplayNameFor(i => faculties[index + a].CreationDate)</td>
+                                    <td class="text-end">@faculties[index + a].CreationDate.ToString("dd-mm-yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">@Html.DisplayNameFor(i => faculties[index + a].Budget)</td>
+                                    <td class="text-end">@faculties[index + a].Budget €</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">@Html.DisplayNameFor(i => faculties[index + a].Employed)</td>
+                                    <td class="text-end">@faculties[index + a].Employed</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+            @{
+                index += 3;
+            }
+
+        </div>
+    }
+    @if ((int) ViewData["LastRowColumns"] != 0)
+    {
+        <div class="row">
+            @for (int i = 0; i < (int) ViewData["LastRowColumns"]; i++)
+            {
+                <div class="col-4 bg-light border border-4 border-white">
+                    <div class="container">
+                        <div class="row text-center">
+                            <h4>@faculties[index + i].FacultyName</h4>
+                        </div>
+                        <div class="row">
+                            <table class="table-borderless">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        Faculty Information:
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="text-start">@Html.DisplayNameFor(z => faculties[index + i].CreationDate)</td>
+                                    <td class="text-end">@faculties[index + i].CreationDate.ToString("dd-mm-yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">@Html.DisplayNameFor(z => faculties[index + i].Budget)</td>
+                                    <td class="text-end">@faculties[index + i].Budget €</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">@Html.DisplayNameFor(z => faculties[index + i].Employed)</td>
+                                    <td class="text-end">@faculties[index + i].Employed</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+</div>
+}

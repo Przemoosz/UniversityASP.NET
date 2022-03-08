@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FirstProject.Data;
 using FirstProject.Models;
+using FirstProject.Models.ViewModels;
 
 namespace FirstProject.Controllers
 {
@@ -26,6 +27,26 @@ namespace FirstProject.Controllers
             return View(await _context.University.ToListAsync());
         }
 
+        // GET: University?UniversityName=[University Name]
+        [HttpGet]
+        public async Task<IActionResult> Index(string universityName)
+        {
+            University selectedUni = await _context.University.Where(u => u.UniversityName == universityName)
+                .FirstOrDefaultAsync();
+            if (selectedUni is null)
+            {
+                return NotFound();
+            }
+
+            selectedUni = await _context.University.Include(u => u.Faculties)
+                .Where(u => u.UniversityName == universityName).SingleAsync();
+            int facultiesCount = selectedUni.Faculties.Count;
+            // List<University> list = new List<University>(1) {selectedUni};
+            ViewData["Rows"] = facultiesCount / 3;
+            ViewData["LastRowColumns"] = facultiesCount % 3;
+            return View("UniversityView",selectedUni);
+        }
+            
         // GET: University/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,11 +65,13 @@ namespace FirstProject.Controllers
 
             return View(university);
         }
+        
         // GET: University/Choose
         [HttpGet]
-        public Task<IActionResult> Choose()
+        public async  Task<IActionResult> Choose()
         {
-            return View();
+            var data = from uni in _context.University select new ChooseUniversityModelView(){UniversityName = uni.UniversityName, Employed = uni.Employed, FacultiesCount = uni.Faculties.Count()};
+            return View(await data.ToListAsync());
         }
 
         // GET: University/Create

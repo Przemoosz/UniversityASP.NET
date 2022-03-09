@@ -15,12 +15,14 @@ public class Transaction
     public TransactionGroupEnum Group { get; set; }
     
     [Required]
-    public decimal Amount { get; set; }
+    [Range(Double.MinValue, Double.MaxValue)]
+    [DataType(DataType.Currency)]
+    public double Amount { get; set; }
     
     [Required]
     public DateTime TransactionDate { get; set; }
     
-    public int UniversityID { get; set; }
+    public int FacultyID { get; set; }
     
-    public University University { get; set; }
+    public Faculty Faculty { get; set; }
 }

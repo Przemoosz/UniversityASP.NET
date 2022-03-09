@@ -26,7 +26,7 @@
                 @Html.DisplayNameFor(model => model.TransactionDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.University)
+                @Html.DisplayNameFor(model => model.Faculty.FacultyName)
             </th>
             <th></th>
         </tr>
@@ -47,7 +47,7 @@
                 @Html.DisplayFor(modelItem => item.TransactionDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.University.Adress)
+                @Html.DisplayFor(modelItem => item.Faculty.FacultyName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.TransactionID">Edit</a> |

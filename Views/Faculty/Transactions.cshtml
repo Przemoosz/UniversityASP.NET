@@ -1,0 +1,31 @@
+﻿@model ICollection<Transaction>
+
+@{
+    ViewData["Title"] = $"{ViewData["FacultyName"]} Transactions";
+    Layout = "_Layout";
+}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Transaction Name</th>
+        <th scope="col">Group</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Transaction Date</th>
+        <th scope="col">Options</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Transaction transaction in Model)
+    {
+        <tr>
+            <td class="row">@Html.DisplayFor(i => transaction.TransactionID)</td>
+            <td>@Html.DisplayFor(i => transaction.TransactionName)</td>
+            <td>@Html.DisplayFor(i => transaction.Group)</td>
+            <td>@Html.DisplayFor(i => transaction.Amount)</td>
+            <td>@Html.DisplayFor(i => transaction.TransactionDate)</td>
+            <td><a asp-controller="Transaction" asp-action="Details" asp-route-id="@transaction.TransactionID">Details</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

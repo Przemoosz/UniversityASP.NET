@@ -26,5 +26,11 @@ public class Faculty
     
     public int UniversityID { get; set; }
     
+    // One to Many with University
     public University University { get; set; }
+    
+    // Many to One with Transaction
+    
+    public ICollection<Transaction>? Transactions { get; set; }
+
 }

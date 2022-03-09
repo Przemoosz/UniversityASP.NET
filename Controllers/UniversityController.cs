@@ -38,8 +38,12 @@ namespace FirstProject.Controllers
                 return NotFound();
             }
 
-            selectedUni = await _context.University.Include(u => u.Faculties)
+            selectedUni = await _context.University.Include(u => u.Faculties).ThenInclude(u => u.Transactions)
                 .Where(u => u.UniversityName == universityName).SingleAsync();
+            // foreach (var faculty in selectedUni.Faculties)
+            // {
+            //     faculty.Transactions = new List<Transaction>();
+            // }
             int facultiesCount = selectedUni.Faculties.Count;
             // List<University> list = new List<University>(1) {selectedUni};
             ViewData["Rows"] = facultiesCount / 3;
@@ -105,6 +109,7 @@ namespace FirstProject.Controllers
                 ModelState.AddModelError("", "University with this name already exists!");
                 return RedirectToAction(nameof(Create),new{error = true, wrongName = university.UniversityName});
             }
+            
             if (ModelState.IsValid)
             {
                 _context.Add(university);

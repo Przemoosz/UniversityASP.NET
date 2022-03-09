@@ -1,3 +1,4 @@
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @model FirstProject.Models.Faculty
 
 @{
@@ -35,7 +36,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UniversityID" class="control-label"></label>
-                <input asp-for="UniversityID" class="form-control" />
+                <select asp-for="UniversityID" class="form-control" asp-items="ViewBag.University"></select>
                 <span asp-validation-for="UniversityID" class="text-danger"></span>
             </div>
             <div class="form-group">

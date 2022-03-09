@@ -1,4 +1,5 @@
-﻿@model FirstProject.Models.University
+﻿@using Microsoft.CodeAnalysis.VisualBasic.Syntax
+@model FirstProject.Models.University
 
 @{
     ViewData["Title"] = Model.UniversityName;
@@ -6,6 +7,13 @@
     Dictionary<int, Faculty> faculties = FirstProject.Models.ViewModels.DisplayFacultiesModel.InitDictionary(Model.Faculties);
     int index = 0;
 }
+@* @foreach (var fac in Model.Faculties) *@
+@* { *@
+@*     foreach (var trans in fac.Transactions) *@
+@*     { *@
+@*         <h1>@Html.DisplayFor(m => trans.TransactionName)</h1> *@
+@*     } *@
+@* } *@
 @if (faculties.Count == 0)
 {
     <div class="container">
@@ -47,11 +55,18 @@ else
                                 </tr>
                                 <tr>
                                     <td class="text-start">@Html.DisplayNameFor(i => faculties[index + a].Budget)</td>
-                                    <td class="text-end">@faculties[index + a].Budget €</td>
+                                    <td class="text-end">@faculties[index + a].Budget zł</td>
                                 </tr>
                                 <tr>
                                     <td class="text-start">@Html.DisplayNameFor(i => faculties[index + a].Employed)</td>
                                     <td class="text-end">@faculties[index + a].Employed</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">@Html.DisplayNameFor(z=> faculties[index+a].Transactions)</td>
+                                    <td class="text-end">@faculties[index+a].Transactions.Count</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start"><a></a></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -91,11 +106,16 @@ else
                                 </tr>
                                 <tr>
                                     <td class="text-start">@Html.DisplayNameFor(z => faculties[index + i].Budget)</td>
-                                    <td class="text-end">@faculties[index + i].Budget €</td>
+                                    <td class="text-end">@faculties[index + i].Budget zł</td>
                                 </tr>
                                 <tr>
                                     <td class="text-start">@Html.DisplayNameFor(z => faculties[index + i].Employed)</td>
                                     <td class="text-end">@faculties[index + i].Employed</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">@Html.DisplayNameFor(z=> faculties[index+i].Transactions)</td>
+                                    <td class="text-end">@faculties[index+i].Transactions.Count</td>
+                                    
                                 </tr>
                                 </tbody>
                             </table>

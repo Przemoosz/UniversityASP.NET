@@ -8,14 +8,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FirstProject.Data;
 using FirstProject.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace FirstProject
+namespace FirstProject.Controllers
 {
     public class TransactionController : Controller
     {
-        private readonly FirstProjectContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public TransactionController(FirstProjectContext context)
+        public TransactionController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -23,7 +25,7 @@ namespace FirstProject
         // GET: Transaction
         public async Task<IActionResult> Index()
         {
-            var firstProjectContext = _context.Transaction.Include(t => t.University);
+            var firstProjectContext = _context.Transaction.Include(t => t.Faculty);
             return View(await firstProjectContext.ToListAsync());
         }
 
@@ -36,7 +38,7 @@ namespace FirstProject
             }
 
             var transaction = await _context.Transaction
-                .Include(t => t.University)
+                .Include(t => t.Faculty)
                 .FirstOrDefaultAsync(m => m.TransactionID == id);
             if (transaction == null)
             {
@@ -49,7 +51,7 @@ namespace FirstProject
         // GET: Transaction/Create
         public IActionResult Create()
         {
-            ViewData["UniversityID"] = new SelectList(_context.Set<University>(), "UniversityID", "Adress");
+            ViewData["Faculty"] = new SelectList(_context.Set<Faculty>(), "FacultyID", "FacultyName");
             return View();
         }
 
@@ -58,16 +60,25 @@ namespace FirstProject
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TransactionID,TransactionName,Group,Amount,TransactionDate,UniversityID")] Transaction transaction)
+        public async Task<IActionResult> Create([Bind("TransactionID,TransactionName,Group,Amount,TransactionDate,FacultyID")] Transaction transaction)
         {
-            
+            Console.WriteLine(transaction.FacultyID);
+            var selectedFaculty = await _context.Faculty.Where(i => i.FacultyID == transaction.FacultyID).FirstOrDefaultAsync();
+            if (selectedFaculty is not null)
+            {
+                transaction.Faculty = selectedFaculty;
+                if (ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
+                {
+                    ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
+                }
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(transaction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UniversityID"] = new SelectList(_context.Set<University>(), "UniversityID", "Adress", transaction.UniversityID);
+            ViewData["FacultyID"] = new SelectList(_context.Set<Faculty>(), "FacultyID", "FacultyName", transaction.FacultyID);
             return View(transaction);
         }
 
@@ -76,8 +87,11 @@ namespace FirstProject
         // public async Task<IActionResult> Create(
         //     [Bind("TransactionID,TransactionName,Group,Amount,TransactionDate,UniversityID")] Transaction transaction, int facultyID)
         // {
+        //     
         //     Faculty facultyToConnect;
         // }
+        
+        
         // GET: Transaction/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -91,10 +105,11 @@ namespace FirstProject
             {
                 return NotFound();
             }
-            ViewData["UniversityID"] = new SelectList(_context.Set<University>(), "UniversityID", "Adress", transaction.UniversityID);
+            ViewData["FacultyID"] = new SelectList(_context.Set<Faculty>(), "FacultyID", "FacultyName", transaction.FacultyID);
             return View(transaction);
         }
 
+        // TODO
         // POST: Transaction/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -127,7 +142,7 @@ namespace FirstProject
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UniversityID"] = new SelectList(_context.Set<University>(), "UniversityID", "Adress", transaction.UniversityID);
+            ViewData["FacultyID"] = new SelectList(_context.Set<Faculty>(), "FacultyID", "FacultyName", transaction.FacultyID);
             return View(transaction);
         }
 
@@ -140,7 +155,7 @@ namespace FirstProject
             }
 
             var transaction = await _context.Transaction
-                .Include(t => t.University)
+                .Include(t => t.Faculty)
                 .FirstOrDefaultAsync(m => m.TransactionID == id);
             if (transaction == null)
             {

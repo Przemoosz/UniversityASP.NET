@@ -36,10 +36,12 @@ namespace FirstProject.Controllers
             {
                 return NotFound();
             }
-
+            
             // var faculty = await _context.Faculty
             //     .FirstOrDefaultAsync(m => m.FacultyID == id);
-            var faculty = await _context.Faculty.Include(f => f.University).FirstOrDefaultAsync(f => f.FacultyID == id);
+            var faculty = await _context.Faculty.Include(f => f.University).Include(f => f.Transactions).FirstOrDefaultAsync(f => f.FacultyID == id);
+            Console.WriteLine("========================================");
+            Console.WriteLine(faculty.Transactions is null);
             if (faculty == null)
             {
                 return NotFound();
@@ -51,9 +53,29 @@ namespace FirstProject.Controllers
         // GET: Faculty/Create
         public IActionResult Create()
         {
+            ViewData["University"] = new SelectList(_context.Set<University>(), "UniversityID", "UniversityName");
             return View();
         }
+        
+        // Get Faculty/Transactions?FacultyId=[id]
+        [HttpGet]
+        public async Task<IActionResult> Transactions(int facultyId)
+        {
+            Faculty selectedFaculty = await _context.Faculty.Where(f => f.FacultyID == facultyId).Include(i => i.Transactions)
+                .FirstOrDefaultAsync();
+            if (selectedFaculty is null)
+            {
+                return NotFound();
+            }
 
+            ViewData["FacultyName"] = selectedFaculty.FacultyName;
+            IQueryable<ICollection<Transaction>> transactionList = from faculty in _context.Faculty
+                where faculty.FacultyID == facultyId
+                select faculty.Transactions;
+            
+            return View(await transactionList.FirstOrDefaultAsync());
+        }
+        
         // POST: Faculty/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -65,6 +87,9 @@ namespace FirstProject.Controllers
             if (choosedUniversity is not null)
             {
                 faculty.University = choosedUniversity;
+                faculty.Transactions = new List<Transaction>();
+                // Console.WriteLine("========================================");
+                // Console.WriteLine(faculty.Transactions is null);
                 ModelState.SetModelValue("University", new ValueProviderResult("", CultureInfo.InvariantCulture));
                 if (ModelState["University"].ValidationState == ModelValidationState.Invalid)
                 {
@@ -77,6 +102,8 @@ namespace FirstProject.Controllers
             }
             if (ModelState.IsValid)
             {
+                // Console.WriteLine("========================================");
+                // Console.WriteLine(faculty.Transactions is null);
                 _context.Add(faculty);
                 await _context.SaveChangesAsync();
             }
@@ -111,6 +138,10 @@ namespace FirstProject.Controllers
                 return NotFound();
             }
 
+            if (faculty.Transactions is null)
+            {
+                faculty.Transactions = new List<Transaction>();
+            }
             if (ModelState.IsValid)
             {
                 try

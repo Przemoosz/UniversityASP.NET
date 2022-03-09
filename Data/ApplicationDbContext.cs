@@ -12,5 +12,6 @@ namespace FirstProject.Data
         }
         public DbSet<FirstProject.Models.University> University { get; set; }
         public DbSet<FirstProject.Models.Faculty> Faculty { get; set; }
+        public DbSet<FirstProject.Models.Transaction> Transaction { get; set; }
     }
 }

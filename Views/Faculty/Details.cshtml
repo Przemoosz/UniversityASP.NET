@@ -41,6 +41,10 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.University.UniversityName)
         </dd>
+        @foreach (var transaction in Model.Transactions)
+        {
+            <p>@transaction.TransactionName</p>
+        }
     </dl>
 </div>
 <div>

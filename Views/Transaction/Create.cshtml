@@ -6,8 +6,15 @@
 }
 
 <h1>Create</h1>
+@if (ViewData["FacultyName"] is not null)
+{
+    <h4>Transaction for @ViewData["FacultyName"]</h4>
+}
+else
+{
+    <h4>Transaction</h4>
+}
 
-<h4>Transaction</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -38,10 +45,21 @@
                 <input asp-for="TransactionDate" class="form-control" />
                 <span asp-validation-for="TransactionDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FacultyID" class="control-label"></label>
-                <select asp-for="FacultyID" class ="form-control" asp-items="ViewBag.Faculty"></select>
-            </div>
+            @if (ViewData["FacultyName"] is null)
+            {
+                <div class="form-group">
+                    <label asp-for="FacultyID" class="control-label"></label>
+                    <select asp-for="FacultyID" class ="form-control" asp-items="ViewBag.Faculty"></select>
+                </div>  
+            }
+            else
+            {
+                <div class="form-group">
+                    @* <p>@ViewData["FacultyName"]</p> *@
+                    <input asp-for="FacultyID" value="@ViewData["FacultyID"]" type="hidden"/>
+                </div>
+            }
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -50,7 +68,16 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    
+    @if (ViewData["FacultyName"] is not null)
+    {
+        <a asp-controller="Faculty" asp-action="Transactions" asp-route-facultyId="@ViewData["FacultyID"]">Back to List</a>
+        <p>Want to create transaction for different Faculty? <a asp-action="Create">Click here</a></p>
+    }
+    else
+    {
+        <a asp-action="Index">Back to List</a>
+    }
 </div>
 
 @section Scripts {

@@ -61,7 +61,7 @@ namespace FirstProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Transactions(int facultyId)
         {
-            Faculty selectedFaculty = await _context.Faculty.Where(f => f.FacultyID == facultyId).Include(i => i.Transactions)
+            Faculty selectedFaculty = await _context.Faculty.Where(f => f.FacultyID == facultyId).Include(i => i.Transactions).Include(i => i.University)
                 .FirstOrDefaultAsync();
             if (selectedFaculty is null)
             {
@@ -69,6 +69,8 @@ namespace FirstProject.Controllers
             }
 
             ViewData["FacultyName"] = selectedFaculty.FacultyName;
+            ViewData["FacultyID"] = selectedFaculty.FacultyID;
+            ViewData["UniversityName"] = selectedFaculty.University.UniversityName;
             IQueryable<ICollection<Transaction>> transactionList = from faculty in _context.Faculty
                 where faculty.FacultyID == facultyId
                 select faculty.Transactions;

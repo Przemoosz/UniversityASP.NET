@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="TransactionID" />
             <div class="form-group">
@@ -19,11 +19,11 @@
                 <input asp-for="TransactionName" class="form-control" />
                 <span asp-validation-for="TransactionName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Group" class="control-label"></label>
-                <select asp-for="Group" class="form-control"></select>
-                <span asp-validation-for="Group" class="text-danger"></span>
-            </div>
+            @* <div class="form-group"> *@
+            @*     <label asp-for="Group" class="control-label"></label> *@
+            @*     <select asp-for="Group" class="form-control"></select> *@
+            @*     <span asp-validation-for="Group" class="text-danger"></span> *@
+            @* </div> *@
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" class="form-control" />
@@ -34,11 +34,11 @@
                 <input asp-for="TransactionDate" class="form-control" />
                 <span asp-validation-for="TransactionDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FacultyID" class="control-label"></label>
-                <select asp-for="FacultyID" class="form-control" asp-items="ViewBag.FacultyID"></select>
-                <span asp-validation-for="FacultyID" class="text-danger"></span>
-            </div>
+            @* <div class="form-group"> *@
+            @*     <label asp-for="FacultyID" class="control-label"></label> *@
+            @*     <select asp-for="FacultyID" class="form-control" asp-items="ViewBag.FacultyID"></select> *@
+            @*     <span asp-validation-for="FacultyID" class="text-danger"></span> *@
+            @* </div> *@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

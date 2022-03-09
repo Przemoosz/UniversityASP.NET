@@ -4,28 +4,64 @@
     ViewData["Title"] = $"{ViewData["FacultyName"]} Transactions";
     Layout = "_Layout";
 }
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Transaction Name</th>
-        <th scope="col">Group</th>
-        <th scope="col">Amount</th>
-        <th scope="col">Transaction Date</th>
-        <th scope="col">Options</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (Transaction transaction in Model)
-    {
-        <tr>
-            <td class="row">@Html.DisplayFor(i => transaction.TransactionID)</td>
-            <td>@Html.DisplayFor(i => transaction.TransactionName)</td>
-            <td>@Html.DisplayFor(i => transaction.Group)</td>
-            <td>@Html.DisplayFor(i => transaction.Amount)</td>
-            <td>@Html.DisplayFor(i => transaction.TransactionDate)</td>
-            <td><a asp-controller="Transaction" asp-action="Details" asp-route-id="@transaction.TransactionID">Details</a></td>
-        </tr>
-    }
-    </tbody>
-</table>
+@if(Model is null || Model.Count == 0)
+{
+    <div class="container">
+        <div class="row text-center">
+            <h3>No Transaction avaible!</h3>
+            <p>Create new transaction and it will be attached to @ViewData["FacultyName"]<a asp-controller="Transaction" asp-action="Create" asp-route-facultyID="@ViewData["FacultyID"]"> Create Here!</a></p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row text-center">
+            <h3>
+                @ViewData["FacultyName"] - Transactions
+            </h3>
+        </div>
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Transaction Name</th>
+                    <th scope="col">Group</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Transaction Date</th>
+                    <th scope="col">Options</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (Transaction transaction in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(i => transaction.TransactionID)</td>
+                        <td>@Html.DisplayFor(i => transaction.TransactionName)</td>
+                        <td>@Html.DisplayFor(i => transaction.Group)</td>
+                        <td>@Html.DisplayFor(i => transaction.Amount)</td>
+                        <td>@Html.DisplayFor(i => transaction.TransactionDate)</td>
+                        <td>
+                            <a asp-controller="Transaction" asp-action="Details" asp-route-id="@transaction.TransactionID">Details</a> | <a asp-controller="Transaction" asp-action="Delete" asp-route-id="@transaction.TransactionID">Delete</a> |
+                        </td>
+            
+                    </tr>
+                }
+                </tbody>
+            </table> 
+        </div>
+        <div class="row text-center">
+            <p>
+                <a asp-controller="University" asp-action="Index" asp-route-universityName="@ViewData["UniversityName"]">Return to University View</a>
+            </p>
+        </div>
+        <div class="row text-center">
+            <p>
+                <a asp-controller="Transaction" asp-action="Create" asp-route-facultyID="@ViewData["FacultyID"]">Add new transaction</a>
+            </p>
+        </div>
+        
+    </div>
+}
+

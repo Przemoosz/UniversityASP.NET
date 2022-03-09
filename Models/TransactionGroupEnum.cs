@@ -2,6 +2,7 @@
 
 public enum TransactionGroupEnum
 {
+    Income,
     Buildings,
     Service,
     Electricity,

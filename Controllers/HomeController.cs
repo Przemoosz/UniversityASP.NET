@@ -25,6 +25,12 @@ namespace FirstProject.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> About()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

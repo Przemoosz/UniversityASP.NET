@@ -3,13 +3,93 @@
 }
 
 <div class="container">
-    <div class="row text-center">
+    <div class="row text-center border-2 border-bottom mb-5">
         <h3>
-            
+            Univeristy Management System
         </h3>
     </div>
     <div class="row">
-        <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis, optio!</div>
+        <div class="col-4">
+            <div class="container">
+                <div class="row text-center border-2 border-dark border-bottom">
+                    <h5>Available Pages</h5>
+                </div>
+                <div class="row mt-3">
+                    <table class="table-borderless">
+                        <thead>
+                        <tr>
+                            <th class="text-start">Page</th>
+                            <th class="text-end">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="text-start">
+                                <a asp-controller="University" asp-action="Choose">Choose Univeristy</a>
+                            </td>
+                            <td class="text-end text-warning">Nearly Done - 80%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">
+                                <a asp-controller="University" asp-action="Create">Create Univeristy</a>
+                            </td>
+                            <td class="text-end text-success">Done</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">
+                                <a asp-controller="Faculty" asp-action="Create">Create Faculty</a>
+                            </td>
+                            <td class="text-end text-success">Done</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">
+                                <a asp-controller="Transaction" asp-action="Create">Create Transaction</a>
+                            </td>
+                            <td class="text-end text-success">Done</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">
+                                Transaction List
+                            </td>
+                            <td class="text-end text-success">Done</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start"><a asp-controller="University" asp-action="Choose">Univeristy Overview</a></td>
+                            <td class="text-end text-warning">Done - 70%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">
+                                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Profile Page</a>
+                            </td>
+                            <td class="text-end text-danger">WIP - 10%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">Students</td>
+                            <td class="text-end text-danger">Not started - 0%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">Instructors</td>
+                            <td class="text-end text-danger">Not started - 0%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">Admin Page</td>
+                            <td class="text-end text-danger">Not started - 0%</td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="text-start">About Page</td>
+                            <td class="text-end text-danger">Not started - 0%</td>
+                        </tr>
+
+                        
+                        
+                        
+                        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur itaque iure quis quisquam vel veritatis?</div>
         <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus, beatae consequatur deserunt dolorum enim excepturi in incidunt perspiciatis unde ut!</div>
     </div>

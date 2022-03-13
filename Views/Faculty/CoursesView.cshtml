@@ -25,17 +25,23 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="row border-bottom-2">
-                            <h5>Search</h5>
+                            <h5 class="border-bottom-2">Search</h5>
                         </div>
                         <form method="get" asp-action="Courses">
                             <div class="row">
                             
-                                <label class="control-label">Search</label>
-                                <input type="text" class="control-label" name="searchString" value="@ViewData["CurrentSearch"]"/>
+                                <label class="control-label">Search by course name:</label>
+                                <input type="text" class="control-label mb-3" name="searchString" value="@ViewData["CurrentSearch"]"/>
+                                <label class="control-label">Sort by:</label>
+                                <select name="sort" asp-items="@((SelectList)ViewData["SortOrder"]) ">
+                                    <option value="@ViewData["CurrentSort"]">@ViewData["CurrentSort"]</option>
+
+                                </select>
+                                
                                 <input type="hidden" name="facultyId" value="@ViewData["FacultyId"]"/>
                             </div>
-                            <div class="row">
-                                <input type="submit" class="btn btn-success" value="Search"/>
+                            <div class="row mt-4">
+                                <input type="submit" class="btn btn-success" value="Search & Sort"/>
                             </div>
                         </form>
                     </div>

@@ -57,6 +57,10 @@ namespace FirstProject.Controllers
             return View();
         }
         
+        
+        
+        
+        
         // Get Faculty/Transactions?FacultyId=[id]
         [HttpGet]
         public async Task<IActionResult> Transactions(int facultyId)
@@ -77,33 +81,72 @@ namespace FirstProject.Controllers
             
             return View(await transactionList.FirstOrDefaultAsync());
         }
+
+        
         
         // GET: Faculty/Courses?FacultyId=[id]
         [HttpGet]
-        public async Task<IActionResult> Courses(int facultyId, string? searchString )
+        public async Task<IActionResult> Courses(int facultyId, string? searchString, string? sort )
         {
-
+            List<string> orderList = new List<string>(4)
+            {
+                "Name Ascending",
+                "Name Descending",
+                "Students Descending",
+                "Students Ascending"
+            };
+            
+            if (sort is not null && orderList.Contains(sort))
+            {
+                orderList.Remove(sort);
+            }
+            SelectList OrderCourses = new SelectList(orderList);
             ViewData["CurrentSearch"] = searchString;
+            ViewData["CurrentSort"] = sort;
             Faculty? connectedFaculty = await _context.Faculty.Where(f => f.FacultyID == facultyId).Include(f => f.University).FirstOrDefaultAsync();
             if (connectedFaculty is null)
             {
                 return NotFound();
             }
 
+            ViewData["SortOrder"] = OrderCourses;
+            
             ViewData["FacultyId"] = facultyId;
             ViewData["FacultyName"] = connectedFaculty.FacultyName;
             ViewData["UniversityName"] = connectedFaculty.University.UniversityName;
             IQueryable<ICollection<Course>> connectedCourses = from faculty in _context.Faculty
                 where (faculty.FacultyID == facultyId)
                 select faculty.Courses;
-            ICollection<Course> courses = await connectedCourses.FirstOrDefaultAsync();
+            IEnumerable<Course> courses = await connectedCourses.FirstOrDefaultAsync();
+            IEnumerable<Course> coursesReturn;
             if(searchString is not null)
             {
-                var searchedCoruses =
-                    from course in courses where course.CourseName.Contains(searchString) select course;
-                return View("CoursesView", searchedCoruses.ToList());
+                
+                var coursesSearched = from course in courses where course.CourseName.Contains(searchString) select course;
+                courses = coursesSearched.ToList();
             }
-            return View("CoursesView", courses);
+
+
+            switch (sort)
+            {
+                case "Name Ascending":
+                    coursesReturn = from course in courses orderby course.CourseName ascending select course;
+                    break;
+                case "Name Descending":
+                    coursesReturn = from course in courses orderby course.CourseName descending select course;
+                    break;
+                case "Students Descending":
+                    coursesReturn = from course in courses orderby course.TotalStudents descending select course;
+                    break;
+                case "Students Ascending":
+                    coursesReturn = from course in courses orderby course.TotalStudents ascending select course;
+                    break;
+                default:
+                    coursesReturn = from course in courses orderby course.CourseName ascending select course;
+                    break;
+            }
+            
+            return View("CoursesView", coursesReturn.ToList());
 
         }
         

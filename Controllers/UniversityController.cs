@@ -38,7 +38,7 @@ namespace FirstProject.Controllers
                 return NotFound();
             }
 
-            selectedUni = await _context.University.Include(u => u.Faculties).ThenInclude(u => u.Transactions)
+            selectedUni = await _context.University.Include(u => u.Faculties).ThenInclude(u => u.Transactions).Include(u => u.Faculties).ThenInclude(u => u.Courses)
                 .Where(u => u.UniversityName == universityName).SingleAsync();
             // foreach (var faculty in selectedUni.Faculties)
             // {

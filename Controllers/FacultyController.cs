@@ -78,6 +78,35 @@ namespace FirstProject.Controllers
             return View(await transactionList.FirstOrDefaultAsync());
         }
         
+        // GET: Faculty/Courses?FacultyId=[id]
+        [HttpGet]
+        public async Task<IActionResult> Courses(int facultyId, string? searchString )
+        {
+
+            ViewData["CurrentSearch"] = searchString;
+            Faculty? connectedFaculty = await _context.Faculty.Where(f => f.FacultyID == facultyId).Include(f => f.University).FirstOrDefaultAsync();
+            if (connectedFaculty is null)
+            {
+                return NotFound();
+            }
+
+            ViewData["FacultyId"] = facultyId;
+            ViewData["FacultyName"] = connectedFaculty.FacultyName;
+            ViewData["UniversityName"] = connectedFaculty.University.UniversityName;
+            IQueryable<ICollection<Course>> connectedCourses = from faculty in _context.Faculty
+                where (faculty.FacultyID == facultyId)
+                select faculty.Courses;
+            ICollection<Course> courses = await connectedCourses.FirstOrDefaultAsync();
+            if(searchString is not null)
+            {
+                var searchedCoruses =
+                    from course in courses where course.CourseName.Contains(searchString) select course;
+                return View("CoursesView", searchedCoruses.ToList());
+            }
+            return View("CoursesView", courses);
+
+        }
+        
         // POST: Faculty/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -90,6 +119,7 @@ namespace FirstProject.Controllers
             {
                 faculty.University = choosedUniversity;
                 faculty.Transactions = new List<Transaction>();
+                faculty.Courses = new List<Course>();
                 // Console.WriteLine("========================================");
                 // Console.WriteLine(faculty.Transactions is null);
                 ModelState.SetModelValue("University", new ValueProviderResult("", CultureInfo.InvariantCulture));

@@ -12,9 +12,15 @@ public class Course
     public string CourseName { get; set; }
     
     [Required]
+    [Display(Name = "Total Students")]
     [Range(5,200,ErrorMessage = "Total students number can not be higher than 200 and lower than 5!")]
     public int TotalStudents { get; set; }
     
+    [Required]
+    [Display(Name = "Course Type")]
+    public CourseTypeEnum CourseType { get; set; }
     
+    public int FacultyID { get; set; }
     
+    public Faculty Faculty { get; set; }
 }

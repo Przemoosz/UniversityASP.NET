@@ -32,5 +32,7 @@ public class Faculty
     // Many to One with Transaction
     
     public ICollection<Transaction>? Transactions { get; set; }
+    
+    public ICollection<Course>? Courses { get; set; }
 
 }

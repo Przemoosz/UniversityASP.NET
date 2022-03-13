@@ -63,6 +63,14 @@ else
                                 </tr>
                                 <tr>
                                     <td class="text-start">
+                                        <a asp-controller="Faculty" asp-action="Courses" asp-route-facultyId="@faculties[index + a].FacultyID">
+                                            @Html.DisplayNameFor(z => faculties[index+a].Courses)
+                                        </a>
+                                    </td>
+                                    <td class="text-end">@faculties[index + a].Courses.Count</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">
                                         <a asp-controller="Faculty" asp-action="Transactions" asp-route-facultyId="@faculties[index+a].FacultyID">
                                             @Html.DisplayNameFor(z => faculties[index + a].Transactions)
                                         </a>
@@ -118,12 +126,20 @@ else
                                 </tr>
                                 <tr>
                                     <td class="text-start">
+                                        <a asp-controller="Faculty" asp-action="Courses" asp-route-facultyId="@faculties[index + i].FacultyID">
+                                            @Html.DisplayNameFor(z => faculties[index+i].Courses)
+                                        </a>
+                                    </td>
+                                    <td class="text-end">@faculties[index + i].Courses.Count</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="text-start">
                                         <a asp-controller="Faculty" asp-action="Transactions" asp-route-facultyId="@faculties[index+i].FacultyID">
                                             @Html.DisplayNameFor(z => faculties[index + i].Transactions)
                                         </a>                                        
                                     </td>
                                     <td class="text-end">@faculties[index+i].Transactions.Count</td>
-                                    
                                 </tr>
                                 </tbody>
                             </table>

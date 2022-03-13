@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Course>;
+
+@{
+    ViewData["Title"] = "fdfsfds";
+    Layout = "_Layout";
+    int a = 1;
+}
+
+@if (Model is null || Model.Count() == 0)
+{
+    <div class="container">
+        <div class="row">
+            <h3>No courses avaible!</h3>
+            @* <p>Create new transaction and it will be attached to @ViewData["FacultyName"]<a asp-controller="Transaction" asp-action="Create" asp-route-facultyID="@ViewData["FacultyID"]"> Create Here!</a></p> *@
+            <p>Create new course and it will be attached to @ViewData["FacultyName"]<a asp-controller="Course" asp-action="Create"> Create Here!</a></p>
+        </div>
+    </div>
+}
+<div class="container">
+    
+
+    <div class="row">
+        <div class="col-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row border-bottom-2">
+                            <h5>Search</h5>
+                        </div>
+                        <form method="get" asp-action="Courses">
+                            <div class="row">
+                            
+                                <label class="control-label">Search</label>
+                                <input type="text" class="control-label" name="searchString" value="@ViewData["CurrentSearch"]"/>
+                                <input type="hidden" name="facultyId" value="@ViewData["FacultyId"]"/>
+                            </div>
+                            <div class="row">
+                                <input type="submit" class="btn btn-success" value="Search"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Course Name</th>
+                        <th scope="col">Total Students</th>
+                        <th scope="col">Course Type</th>
+                        <th scope="col">Options</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (Course course in Model)
+                    {
+                        <tr>
+                            <td>@a</td>
+                            <td>@Html.DisplayFor(i => course.CourseName)</td>
+                            <td>@Html.DisplayFor(i => course.TotalStudents)</td>
+                            <td>@Html.DisplayFor(i => course.CourseType)</td>
+                            <td>WIP</td>
+                        </tr>
+                        a++;
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

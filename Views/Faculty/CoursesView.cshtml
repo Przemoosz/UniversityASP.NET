@@ -6,7 +6,7 @@
     int a = 1;
 }
 
-@if (Model is null || Model.Count() == 0)
+@if ((Model is null || Model.Count() == 0) && (ViewData["CurrentSearch"] is null && ViewData["CurrentSort"] is null && ViewData["CurrentGroup"] is null))
 {
     <div class="container">
         <div class="row">
@@ -16,7 +16,9 @@
         </div>
     </div>
 }
-<div class="container">
+else
+{
+    <div class="container">
     
 
     <div class="row">
@@ -33,9 +35,19 @@
                                 <label class="control-label">Search by course name:</label>
                                 <input type="text" class="control-label mb-3" name="searchString" value="@ViewData["CurrentSearch"]"/>
                                 <label class="control-label">Sort by:</label>
-                                <select name="sort" asp-items="@((SelectList)ViewData["SortOrder"]) ">
+                                <select name="sort"class="mb-3"asp-items="@((SelectList)ViewData["SortOrder"]) ">
                                     <option value="@ViewData["CurrentSort"]">@ViewData["CurrentSort"]</option>
-
+                                </select>
+                                <label class="control-label">Group by:</label>
+                                <select name="courseType" asp-items="@Html.GetEnumSelectList<CourseTypeEnum>()">
+                                    @if (ViewData["CurrentGroup"] is null)
+                                    {
+                                        <option value="@null">-----</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@ViewData["CurrentGroup"]">@Enum.GetName(typeof(CourseTypeEnum), @ViewData["CurrentGroup"]!)</option>
+                                    }
                                 </select>
                                 
                                 <input type="hidden" name="facultyId" value="@ViewData["FacultyId"]"/>
@@ -49,6 +61,11 @@
             </div>
         </div>
         <div class="col-8">
+            <div class="row text-center">
+                <h4>
+                    Course Overview
+                </h4>
+            </div>
             <div class="row">
                 <table class="table">
                     <thead>
@@ -68,13 +85,21 @@
                             <td>@Html.DisplayFor(i => course.CourseName)</td>
                             <td>@Html.DisplayFor(i => course.TotalStudents)</td>
                             <td>@Html.DisplayFor(i => course.CourseType)</td>
-                            <td>WIP</td>
+                            <td>
+                                <a asp-controller="Course" asp-action="Edit" asp-route-id="@course.CourseID">Edit</a> | 
+                                <a asp-controller="Course" asp-action="Delete" asp-route-id="@course.CourseID">Delete</a>
+                            </td>
                         </tr>
                         a++;
                     }
                     </tbody>
                 </table>
             </div>
+            <div class="row">
+                <a asp-controller="Course" asp-action="Create">Create new course</a>
+            </div>
         </div>
     </div>
 </div>
+
+}

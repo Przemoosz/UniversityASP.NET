@@ -86,7 +86,7 @@ namespace FirstProject.Controllers
         
         // GET: Faculty/Courses?FacultyId=[id]
         [HttpGet]
-        public async Task<IActionResult> Courses(int facultyId, string? searchString, string? sort )
+        public async Task<IActionResult> Courses(int facultyId, string? searchString, string? sort, CourseTypeEnum? courseType )
         {
             List<string> orderList = new List<string>(4)
             {
@@ -119,12 +119,43 @@ namespace FirstProject.Controllers
                 select faculty.Courses;
             IEnumerable<Course> courses = await connectedCourses.FirstOrDefaultAsync();
             IEnumerable<Course> coursesReturn;
+
+            if (courseType is not null)
+            {
+                switch (courseType)
+                {
+                    case CourseTypeEnum.BachelorDegree:
+                        courses = from course in courses
+                            where course.CourseType == CourseTypeEnum.BachelorDegree
+                            select course;
+                        break;
+                    case CourseTypeEnum.EngineerDegree:
+                        courses = from course in courses
+                            where course.CourseType == CourseTypeEnum.EngineerDegree
+                            select course;
+                        break;
+                    case CourseTypeEnum.MasterDegree:
+                        courses = from course in courses
+                            where course.CourseType == CourseTypeEnum.MasterDegree
+                            select course;
+                        break;
+                    case CourseTypeEnum.MasterEngineerDegree:
+                        courses = from course in courses
+                            where course.CourseType == CourseTypeEnum.MasterEngineerDegree
+                            select course;
+                        break;
+                    
+                }
+
+                ViewData["CurrentGroup"] = courseType;
+            }
+            
             if(searchString is not null)
             {
-                
                 var coursesSearched = from course in courses where course.CourseName.Contains(searchString) select course;
                 courses = coursesSearched.ToList();
             }
+            
 
 
             switch (sort)
@@ -198,6 +229,7 @@ namespace FirstProject.Controllers
             {
                 return NotFound();
             }
+            
             return View(faculty);
         }
 

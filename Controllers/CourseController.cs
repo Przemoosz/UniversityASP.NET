@@ -99,7 +99,7 @@ namespace FirstProject.Controllers
             {
                 return NotFound();
             }
-            ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
+            ViewBag.Faculty = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
             return View(course);
         }
 

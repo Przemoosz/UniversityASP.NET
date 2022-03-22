@@ -106,54 +106,121 @@ namespace FirstProject.Controllers
         // POST: Course/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> Edit(int id, [Bind("CourseID,CourseName,TotalStudents,CourseType,FacultyID")] Course course)
+        // {
+        //     if (id != course.CourseID)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     Faculty? choosedNewFaculty =
+        //         await _context.Faculty.Where(f => f.FacultyID == course.FacultyID).FirstOrDefaultAsync();
+        //     if (choosedNewFaculty is not null)
+        //     {
+        //         course.Faculty = choosedNewFaculty;
+        //         if (ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
+        //         {
+        //             ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         return NotFound();
+        //     }
+        //     
+        //     
+        //     if (ModelState.IsValid)
+        //     {
+        //         try
+        //         {
+        //             _context.Update(course);
+        //             await _context.SaveChangesAsync();
+        //         }
+        //         catch (DbUpdateConcurrencyException)
+        //         {
+        //             if (!CourseExists(course.CourseID))
+        //             {
+        //                 return NotFound();
+        //             }
+        //             else
+        //             {
+        //                 throw;
+        //             }
+        //         }
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        //     ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
+        //     return View(course);
+        // }
+        
+        
+        
+        // HTTP POST EDIT
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseID,CourseName,TotalStudents,CourseType,FacultyID")] Course course)
+        public async Task<IActionResult> Edit(int? id, byte[] rowVersion)
         {
-            if (id != course.CourseID)
+            if (id is null)
             {
                 return NotFound();
             }
 
-            Faculty? choosedNewFaculty =
-                await _context.Faculty.Where(f => f.FacultyID == course.FacultyID).FirstOrDefaultAsync();
-            if (choosedNewFaculty is not null)
+            Course? courseToUpdate = await _context.Course.Include(i => i.Faculty).ThenInclude(i => i.University).Include(f => f.Faculty).ThenInclude(f => f.Transactions).Include(f => f.Faculty).Where(c => c.CourseID == id)
+                .FirstOrDefaultAsync();
+            // Faculty? connectedFaculty = await _context.Faculty.Where(f => f.FacultyID == courseToUpdate.FacultyID)
+            //     .FirstOrDefaultAsync();
+            
+            if (courseToUpdate is null)
             {
-                course.Faculty = choosedNewFaculty;
-                if (ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
-                {
-                    ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
-                }
-            }
-            else
-            {
-                return NotFound();
+                Course deletedCourse = new Course();
+                await TryUpdateModelAsync(deletedCourse);
+                ModelState.AddModelError(string.Empty,"Unable to edit course, because it was already deleted!");
+                ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", courseToUpdate.FacultyID );
+                return View(deletedCourse);
             }
             
-            
-            if (ModelState.IsValid)
+            _context.Entry(courseToUpdate).Property("RowVersion").OriginalValue = rowVersion;
+            // ModelState["University"].ValidationState = ModelValidationState.Invalid;
+            int i = 0;
+            if (await TryUpdateModelAsync<Course>(courseToUpdate, "", c => c.CourseName, c => c.CourseType,
+                    c => c.TotalStudents))
             {
                 try
                 {
-                    _context.Update(course);
+                    _context.Course.Update(courseToUpdate);
                     await _context.SaveChangesAsync();
+                    Console.WriteLine("Done");
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException exception)
                 {
-                    if (!CourseExists(course.CourseID))
+                    Console.WriteLine("Not Done");
+                    var exceptionEntries  = exception.Entries.Single();
+                    var clientvalues = (Course) exceptionEntries.Entity;
+                    var databaseEntry = exceptionEntries.GetDatabaseValues();
+                    if (databaseEntry is null)
                     {
-                        return NotFound();
+                        ModelState.AddModelError(string.Empty,"Unable to save changes. Object was deleted!");
                     }
                     else
                     {
-                        throw;
+                        var databaseValues = (Course) databaseEntry.ToObject();
+                        
                     }
+                    var prop = exceptionEntries.CurrentValues;
+                    var orig = exceptionEntries.GetDatabaseValues();
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
-            return View(course);
+            
+            
+            ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", courseToUpdate.Faculty.FacultyName);
+            return View(courseToUpdate);
         }
+        
+        
 
         // GET: Course/Delete/5
         public async Task<IActionResult> Delete(int? id)

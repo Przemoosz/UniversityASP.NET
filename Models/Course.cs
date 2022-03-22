@@ -20,6 +20,10 @@ public class Course
     [Display(Name = "Course Type")]
     public CourseTypeEnum CourseType { get; set; }
     
+    
+    // Tracking Changes in SQL
+    [Timestamp]
+    public byte[] RowVersion { get; set; }
     public int FacultyID { get; set; }
     
     public Faculty Faculty { get; set; }

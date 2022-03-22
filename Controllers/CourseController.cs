@@ -1,6 +1,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -108,7 +109,7 @@ namespace FirstProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         // [HttpPost]
         // [ValidateAntiForgeryToken]
-        // public async Task<IActionResult> Edit(int id, [Bind("CourseID,CourseName,TotalStudents,CourseType,FacultyID")] Course course)
+        // public async Task<IActionResult> Edit(int id, [Bind("CourseID,CourseName,TotalStudents,CourseType,FacultyID")] Course course, byte[] rowVersion)
         // {
         //     if (id != course.CourseID)
         //     {
@@ -129,7 +130,8 @@ namespace FirstProject.Controllers
         //     {
         //         return NotFound();
         //     }
-        //     
+        //
+        //     _context.Entry(course).Property("RowVersion").OriginalValue = rowVersion;
         //     
         //     if (ModelState.IsValid)
         //     {
@@ -167,7 +169,9 @@ namespace FirstProject.Controllers
             {
                 return NotFound();
             }
-
+        
+            // TODO 
+            // Change Include methods!
             Course? courseToUpdate = await _context.Course.Include(i => i.Faculty).ThenInclude(i => i.University).Include(f => f.Faculty).ThenInclude(f => f.Transactions).Include(f => f.Faculty).Where(c => c.CourseID == id)
                 .FirstOrDefaultAsync();
             // Faculty? connectedFaculty = await _context.Faculty.Where(f => f.FacultyID == courseToUpdate.FacultyID)
@@ -178,7 +182,7 @@ namespace FirstProject.Controllers
                 Course deletedCourse = new Course();
                 await TryUpdateModelAsync(deletedCourse);
                 ModelState.AddModelError(string.Empty,"Unable to edit course, because it was already deleted!");
-                ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", courseToUpdate.FacultyID );
+                ViewBag.Faculty = new SelectList(_context.Faculty, "FacultyID", "FacultyName", courseToUpdate.FacultyID);
                 return View(deletedCourse);
             }
             
@@ -208,15 +212,22 @@ namespace FirstProject.Controllers
                     else
                     {
                         var databaseValues = (Course) databaseEntry.ToObject();
-                        
+                        if (databaseValues.CourseName != clientvalues.CourseName)
+                        {
+                            ModelState.AddModelError("Name", $"Current value {databaseValues.CourseName}");
+                            
+                        }
+                        ModelState.AddModelError(string.Empty,"Concurency error!");
+                        courseToUpdate.RowVersion = (byte[]) databaseValues.RowVersion;
+                        ModelState.Remove("RowVersion");
                     }
-                    var prop = exceptionEntries.CurrentValues;
-                    var orig = exceptionEntries.GetDatabaseValues();
+                    // var prop = exceptionEntries.CurrentValues;
+                    // var orig = exceptionEntries.GetDatabaseValues();
                 }
             }
             
             
-            ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", courseToUpdate.Faculty.FacultyName);
+            ViewBag.Faculty = new SelectList(_context.Faculty, "FacultyID", "FacultyName", courseToUpdate.FacultyID);
             return View(courseToUpdate);
         }
         

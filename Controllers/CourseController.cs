@@ -172,7 +172,7 @@ namespace FirstProject.Controllers
         
             // TODO 
             // Change Include methods!
-            Course? courseToUpdate = await _context.Course.Include(i => i.Faculty).ThenInclude(i => i.University).Include(f => f.Faculty).ThenInclude(f => f.Transactions).Include(f => f.Faculty).Where(c => c.CourseID == id)
+            Course? courseToUpdate = await _context.Course.Include(i => i.Faculty).ThenInclude(i => i.University).Where(c => c.CourseID == id)
                 .FirstOrDefaultAsync();
             // Faculty? connectedFaculty = await _context.Faculty.Where(f => f.FacultyID == courseToUpdate.FacultyID)
             //     .FirstOrDefaultAsync();
@@ -214,10 +214,20 @@ namespace FirstProject.Controllers
                         var databaseValues = (Course) databaseEntry.ToObject();
                         if (databaseValues.CourseName != clientvalues.CourseName)
                         {
-                            ModelState.AddModelError("Name", $"Current value {databaseValues.CourseName}");
-                            
+                            ModelState.AddModelError("CourseName", $"Current value in database: {databaseValues.CourseName}");
                         }
-                        ModelState.AddModelError(string.Empty,"Concurency error!");
+
+                        if (databaseValues.CourseType != clientvalues.CourseType)
+                        {
+                            ModelState.AddModelError("CourseType", $"Current value in database: {databaseValues.CourseType}");
+                        }
+
+                        if (databaseValues.TotalStudents != clientvalues.TotalStudents)
+                        {
+                            ModelState.AddModelError("TotalStudents",$"Current value in database: {databaseValues.TotalStudents}");
+                        }
+                        ModelState.AddModelError(string.Empty,"Concurrency Error occurred! This mean that someone have already made a change to this object and your version is not compatibile with actual version in database." +
+                                                              " Click save again to force saving your version, or abort changes and return to list using Back to list ");
                         courseToUpdate.RowVersion = (byte[]) databaseValues.RowVersion;
                         ModelState.Remove("RowVersion");
                     }

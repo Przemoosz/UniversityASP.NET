@@ -51,7 +51,7 @@ namespace FirstProject.Controllers
         // GET: Course/Create
         public IActionResult Create()
         {
-            ViewData["Faculty"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName");
+            ViewBag.Faculty = new SelectList(_context.Faculty, "FacultyID", "FacultyName");
             return View();
         }
 
@@ -66,9 +66,16 @@ namespace FirstProject.Controllers
             if (choosedFaculty is not null)
             {
                 course.Faculty = choosedFaculty;
+                course.RowVersion = Array.Empty<byte>();
                 if (ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
                 {
                     ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
+                    
+                }
+
+                if (ModelState["RowVersion"].ValidationState == ModelValidationState.Invalid)
+                {
+                    ModelState["RowVersion"].ValidationState = ModelValidationState.Valid;
                 }
                 
             }
@@ -83,7 +90,7 @@ namespace FirstProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
+            ViewBag.Faculty = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
             return View(course);
         }
 
@@ -103,61 +110,6 @@ namespace FirstProject.Controllers
             ViewBag.Faculty = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
             return View(course);
         }
-
-        // POST: Course/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<IActionResult> Edit(int id, [Bind("CourseID,CourseName,TotalStudents,CourseType,FacultyID")] Course course, byte[] rowVersion)
-        // {
-        //     if (id != course.CourseID)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     Faculty? choosedNewFaculty =
-        //         await _context.Faculty.Where(f => f.FacultyID == course.FacultyID).FirstOrDefaultAsync();
-        //     if (choosedNewFaculty is not null)
-        //     {
-        //         course.Faculty = choosedNewFaculty;
-        //         if (ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
-        //         {
-        //             ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
-        //         }
-        //     }
-        //     else
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     _context.Entry(course).Property("RowVersion").OriginalValue = rowVersion;
-        //     
-        //     if (ModelState.IsValid)
-        //     {
-        //         try
-        //         {
-        //             _context.Update(course);
-        //             await _context.SaveChangesAsync();
-        //         }
-        //         catch (DbUpdateConcurrencyException)
-        //         {
-        //             if (!CourseExists(course.CourseID))
-        //             {
-        //                 return NotFound();
-        //             }
-        //             else
-        //             {
-        //                 throw;
-        //             }
-        //         }
-        //         return RedirectToAction(nameof(Index));
-        //     }
-        //     ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
-        //     return View(course);
-        // }
-        
-        
         
         // HTTP POST EDIT
         
@@ -190,7 +142,7 @@ namespace FirstProject.Controllers
             // ModelState["University"].ValidationState = ModelValidationState.Invalid;
             int i = 0;
             if (await TryUpdateModelAsync<Course>(courseToUpdate, "", c => c.CourseName, c => c.CourseType,
-                    c => c.TotalStudents))
+                    c => c.TotalStudents, c=> c.FacultyID))
             {
                 try
                 {
@@ -226,6 +178,13 @@ namespace FirstProject.Controllers
                         {
                             ModelState.AddModelError("TotalStudents",$"Current value in database: {databaseValues.TotalStudents}");
                         }
+
+                        if (databaseValues.FacultyID != clientvalues.FacultyID)
+                        {
+                            Faculty dbFaculty = await _context.Faculty.Where(f => f.FacultyID == databaseValues.FacultyID)
+                                .SingleAsync();
+                            ModelState.AddModelError("FacultyID", $"Current Faculty in database is: {dbFaculty.FacultyName}");
+                        }
                         ModelState.AddModelError(string.Empty,"Concurrency Error occurred! This mean that someone have already made a change to this object and your version is not compatibile with actual version in database." +
                                                               " Click save again to force saving your version, or abort changes and return to list using Back to list ");
                         courseToUpdate.RowVersion = (byte[]) databaseValues.RowVersion;
@@ -241,10 +200,8 @@ namespace FirstProject.Controllers
             return View(courseToUpdate);
         }
         
-        
 
-        // GET: Course/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
         {
             if (id == null)
             {
@@ -252,25 +209,46 @@ namespace FirstProject.Controllers
             }
 
             var course = await _context.Course
-                .Include(c => c.Faculty)
+                .Include(c => c.Faculty).AsNoTracking()
                 .FirstOrDefaultAsync(m => m.CourseID == id);
             if (course == null)
             {
+                if(concurrencyError.GetValueOrDefault())
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 return NotFound();
             }
 
+            if (concurrencyError.GetValueOrDefault())
+            {
+                ViewData["ConcurencyError"] = "You are trying to delete object which was modified during your request! Check new value using 'Back to list' or click delete again to force delete'";
+            }
             return View(course);
         }
 
         // POST: Course/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(Course course)
         {
-            var course = await _context.Course.FindAsync(id);
-            _context.Course.Remove(course);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            // int id = course.CourseID;
+            // course = await _context.Course.Where(f => f.CourseID == id).SingleAsync();
+            try
+            {
+                // Course courseToDelete = await _context.Course.Where(c => c.CourseID == course.CourseID).SingleAsync();
+                if (await _context.Course.AnyAsync(m => m.CourseID == course.CourseID))
+                {
+                    _context.Course.Remove(course);
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                // Console.WriteLine("Catched");
+                return RedirectToAction(nameof(Delete), new { id = course.CourseID,  concurrencyError = true});
+            }
         }
 
         private bool CourseExists(int id)

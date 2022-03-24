@@ -39,6 +39,8 @@
                 <select asp-for="UniversityID" class="form-control" asp-items="ViewBag.University"></select>
                 <span asp-validation-for="UniversityID" class="text-danger"></span>
             </div>
+            @* TODO *@
+            @* Create attach to uni  *@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -47,7 +49,8 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    @* <a asp-action="Index">Back to List</a> *@
+    <a href="javascript: history.go(-1)">Return to Faculties</a>
 </div>
 
 @section Scripts {

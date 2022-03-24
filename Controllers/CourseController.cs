@@ -88,10 +88,11 @@ namespace FirstProject.Controllers
             {
                 _context.Add(course);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Courses","Faculty", new {facultyId = choosedFaculty.FacultyID });
             }
             ViewBag.Faculty = new SelectList(_context.Faculty, "FacultyID", "FacultyName", course.FacultyID);
             return View(course);
+            // return RedirectToAction("Courses","Faculty", new {facultyId = choosedFaculty.FacultyID });
         }
 
         // GET: Course/Edit/5

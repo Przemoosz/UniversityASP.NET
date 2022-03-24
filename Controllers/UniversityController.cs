@@ -114,7 +114,7 @@ namespace FirstProject.Controllers
             {
                 _context.Add(university);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Choose));
             }
             return View(university);
         }

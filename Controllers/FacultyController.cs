@@ -53,7 +53,7 @@ namespace FirstProject.Controllers
         // GET: Faculty/Create
         public IActionResult Create()
         {
-            ViewData["University"] = new SelectList(_context.Set<University>(), "UniversityID", "UniversityName");
+            ViewBag.University = new SelectList(_context.Set<University>(), "UniversityID", "UniversityName");
             return View();
         }
         

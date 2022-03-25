@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
@@ -112,7 +113,28 @@ namespace FirstProject.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+
+                // Checking if user exists in database
+                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty,"Invalid login attempt! USer does not exists");
+                    return Page();
+                }
+                
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+                if (result.Succeeded)
+                {
+                    // Deffault login with Claims
+                    await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe,
+                        new Claim[] {new Claim("amr", "pwd"), new Claim("EmployeeNumber","1")});
+                    _logger.LogInformation("User logged in.");
+                    return LocalRedirect(returnUrl);
+                }
+                
+                
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

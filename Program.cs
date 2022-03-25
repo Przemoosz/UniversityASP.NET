@@ -28,6 +28,8 @@ builder.Services.Configure<IdentityOptions>(option =>
     option.SignIn.RequireConfirmedAccount = false;
 });
 
+AddAuthorizationPolicy(builder.Services);
+
 var app = builder.Build();
 
 
@@ -57,3 +59,15 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+
+void AddAuthorizationPolicy(IServiceCollection service)
+{
+    // Adding authorization
+    service.AddAuthorization((option) =>
+    {
+        // Adding policy with required claim added in login.cshtml.cs
+        option.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("EmployeeNumber"));
+    });
+
+}

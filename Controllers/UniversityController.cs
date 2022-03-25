@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using FirstProject.Data;
 using FirstProject.Models;
 using FirstProject.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FirstProject.Controllers
 {
@@ -79,6 +80,7 @@ namespace FirstProject.Controllers
         }
 
         // GET: University/Create
+        [Authorize(Policy = "EmployeeOnly")]
         public IActionResult Create(bool error = false, string? wrongName = null)
         {
             if (error)

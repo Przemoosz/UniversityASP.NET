@@ -126,9 +126,16 @@ namespace FirstProject.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    // Claim[] claims = new Claim[] {new Claim("amr", "pwd"), 
+                    //     new Claim("EmployeeNumber","1") };
+                    Claim[] claims = new Claim[] 
+                        {new Claim("amr", "pwd")};
+                    // Taking all roles attached to user
+                    var roles = await _signInManager.UserManager.GetRolesAsync(user);
+
                     // Deffault login with Claims
                     await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe,
-                        new Claim[] {new Claim("amr", "pwd"), new Claim("EmployeeNumber","1")});
+                        claims);
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

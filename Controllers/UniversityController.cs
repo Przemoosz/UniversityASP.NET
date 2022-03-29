@@ -72,6 +72,7 @@ namespace FirstProject.Controllers
         }
         
         // GET: University/Choose
+        [Authorize(Policy = "RequireAdmin")]
         [HttpGet]
         public async  Task<IActionResult> Choose()
         {
@@ -80,7 +81,7 @@ namespace FirstProject.Controllers
         }
 
         // GET: University/Create
-        [Authorize(Policy = "EmployeeOnly")]
+        // [Authorize(Policy = "EmployeeOnly")]
         public IActionResult Create(bool error = false, string? wrongName = null)
         {
             if (error)

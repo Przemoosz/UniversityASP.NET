@@ -1,0 +1,15 @@
+﻿@model IEnumerable<ApplicationUser>
+
+@{
+    ViewData["Title"] = "Admin - Users";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var user in Model)
+        {
+            <p>@Html.DisplayFor(u => user.Email)</p>
+        }
+    </div>
+</div>

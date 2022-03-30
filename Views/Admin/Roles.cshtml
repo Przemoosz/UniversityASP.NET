@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewData["Title"] = "Roles";
+    Layout = "_Layout";
+}
+@foreach (var a in Model)
+{
+    <p>@a.Name</p>
+}
+<h2>title</h2>

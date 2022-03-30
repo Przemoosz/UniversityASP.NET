@@ -121,6 +121,8 @@ namespace FirstProject.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty,"Invalid login attempt! USer does not exists");
                     return Page();
                 }
+
+                // Input.Email = "Admin";
                 
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
@@ -130,6 +132,7 @@ namespace FirstProject.Areas.Identity.Pages.Account
                     //     new Claim("EmployeeNumber","1") };
                     Claim[] claims = new Claim[] 
                         {new Claim("amr", "pwd")};
+                    
                     // Taking all roles attached to user
                     var roles = await _signInManager.UserManager.GetRolesAsync(user);
 

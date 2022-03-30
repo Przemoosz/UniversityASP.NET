@@ -129,7 +129,7 @@ namespace FirstProject.Migrations
 
                     b.HasIndex("FacultyID");
 
-                    b.ToTable("Course");
+                    b.ToTable("Course", (string)null);
                 });
 
             modelBuilder.Entity("FirstProject.Models.Faculty", b =>
@@ -161,7 +161,7 @@ namespace FirstProject.Migrations
 
                     b.HasIndex("UniversityID");
 
-                    b.ToTable("Faculty");
+                    b.ToTable("Faculty", (string)null);
                 });
 
             modelBuilder.Entity("FirstProject.Models.Transaction", b =>
@@ -193,7 +193,7 @@ namespace FirstProject.Migrations
 
                     b.HasIndex("FacultyID");
 
-                    b.ToTable("Transaction");
+                    b.ToTable("Transaction", (string)null);
                 });
 
             modelBuilder.Entity("FirstProject.Models.University", b =>
@@ -222,7 +222,7 @@ namespace FirstProject.Migrations
 
                     b.HasKey("UniversityID");
 
-                    b.ToTable("University");
+                    b.ToTable("University", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

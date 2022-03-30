@@ -2,6 +2,7 @@ using FirstProject.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FirstProject.Models;
+using FirstProject.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+// var app = builder.Build();
 
 builder.Services.Configure<IdentityOptions>(option =>
 {
@@ -58,6 +60,19 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+// Set this value to true to initialize admin user and Admin/User Roles
+if (false)
+{
+    
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        Thread.Sleep(3000);
+        await AdminDefaultCreate.Initializer(services);
+        await RolesDefaultCreate.Initializer(services);
+
+    }
+}
 app.Run();
 
 

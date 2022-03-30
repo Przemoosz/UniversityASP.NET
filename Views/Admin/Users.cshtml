@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ApplicationUser>
+﻿@model IEnumerable<FirstProject.Models.ViewModels.AdminUserDisplayModel>
 
 @{
     ViewData["Title"] = "Admin - Users";
@@ -7,9 +7,50 @@
 
 <div class="container">
     <div class="row">
-        @foreach (var user in Model)
-        {
-            <p>@Html.DisplayFor(u => user.Email)</p>
-        }
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>User Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>E-Mail</th>
+                <th>Role</th>
+                <th>Options</th>
+            </tr>
+            </thead>
+        
+            <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(u => user.User.Id)</td>
+                    <td>@Html.DisplayFor(u => user.User.UserName)</td>
+                    <td>@Html.DisplayFor(u => user.User.FirstName)</td>
+                    <td>@Html.DisplayFor(u => user.User.LastName)</td>
+                    <td>@Html.DisplayFor(u => user.User.Email)</td>
+                    <td>
+                        @if (user.Role is not null )
+                        {
+                            @foreach (var role in user.Role)
+                            {
+                                @Html.DisplayFor(u => role)
+                            }
+                        }
+                        else
+                        {
+                            @:No roles attached
+                        }
+
+                    </td>
+                    <td>
+                        <a asp-controller="Admin" asp-action="Delete" asp-route-id="@user.User.Id">Delete</a>
+                    </td>
+                </tr>
+     
+            }
+            </tbody>
+        </table>
+
     </div>
 </div>

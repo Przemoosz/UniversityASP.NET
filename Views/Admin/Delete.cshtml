@@ -1,0 +1,82 @@
+﻿@model FirstProject.Models.ViewModels.AdminUserDisplayModel
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="container">
+                <div class="row text-center border-2 border-dark border-bottom">
+                    <h3>
+                        Delete User
+                    </h3>
+                </div>
+                <div class="row">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th class="text-start">Information</th>
+                            <th class="text-end">User Data</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="text-start">Id</td>
+                            <td class="text-end">@Html.DisplayFor(u => Model.User.Id)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">User Name</td>
+                            <td class="text-end">@Html.DisplayFor(u => Model.User.UserName)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">First Name</td>
+                            <td class="text-end">@Html.DisplayFor(u => Model.User.FirstName)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">Last Name</td>
+                            <td class="text-end">@Html.DisplayFor(u => Model.User.LastName)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">Email</td>
+                            <td class="text-end">@Html.DisplayFor(u => Model.User.Email)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">Roles</td>
+                            @if(Model.Role is not null){
+                                
+                                <td class="text-end">
+                                    @foreach (string role in Model.Role)
+                                    {
+                                        @Html.DisplayFor(u => role)
+                                    }
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-end">No roles attached</td>
+                            }
+                            
+                        </tr>
+                        
+                        
+                        
+                        </tbody>
+                    </table>
+                    
+                </div>
+                <div class="row">
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="User.Id"/>
+                        <input class="btn btn-warning" value="Delete" type="submit"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    
+</div>

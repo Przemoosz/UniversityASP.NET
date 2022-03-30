@@ -29,3 +29,29 @@ After initializing database type run command
 dotnet run
 ```
 Your app is now running, on PowerShell window, you should have displayed URL
+## Create Admin User
+To create an admin user, with permission to access "Admin Page", firt make sure you updated database (more in Installation section)
+
+In Program.cs go to line 64 and in if statement change "false" to "true". YOur code shoul looks like this:
+```csharp
+// Set this value to true to initialize admin user and Admin/User Roles
+if (true)
+{
+    
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        Thread.Sleep(3000);
+        await AdminDefaultCreate.Initializer(services);
+        await RolesDefaultCreate.Initializer(services);
+
+    }
+}
+```
+Now run the program and in the login page type:
+
+Login: admin@example.com
+
+Password: AdminPassword
+
+Now you have access to admin page

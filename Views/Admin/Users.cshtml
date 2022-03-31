@@ -44,7 +44,17 @@
 
                     </td>
                     <td>
-                        <a asp-controller="Admin" asp-action="Delete" asp-route-id="@user.User.Id">Delete</a>
+                        
+                        @if (user.Role is not null && user.Role.Contains("Admin"))
+                        {
+                            @:Cant delete admin!
+                        }
+                        else
+                        {
+                            <a asp-controller="Admin" asp-action="Delete" asp-route-id="@user.User.Id">Delete</a>
+                            
+                        }
+                        <a asp-controller="Admin" asp-action="Details" asp-route-id="@user.User.Id">Roles</a>
                     </td>
                 </tr>
      

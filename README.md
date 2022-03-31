@@ -30,9 +30,9 @@ dotnet run
 ```
 Your app is now running, on PowerShell window, you should have displayed URL
 ## Create Admin User
-To create an admin user, with permission to access "Admin Page", firt make sure you updated database (more in Installation section)
+To create an admin user, with permission to access "Admin Page", first make sure you updated database (more in Installation section)
 
-In Program.cs go to line 64 and in if statement change "false" to "true". YOur code shoul looks like this:
+In Program.cs go to line 64 and in if statement change "false" to "true". Your code should looks like this:
 ```csharp
 // Set this value to true to initialize admin user and Admin/User Roles
 if (true)

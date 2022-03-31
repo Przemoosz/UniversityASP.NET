@@ -10,6 +10,8 @@
     <div class="row">
         <div class="col-3"></div>
         <div class="col-6">
+            <form asp-action="Details">
+                <input type="hidden" asp-for="User.Id" value="@Model.User.Id"/>
             <div class="container">
                 @if (ViewData["DatabaseError"] is not null)
                 {
@@ -55,13 +57,16 @@
                         </tr>
                         <tr>
                             <td class="text-start">Roles</td>
+                            
                             @if (Model.Role is not null)
                             {
+                                List<FirstProject.Models.ViewModels.AttachedRolesData> roles = ViewBag.Roles;
 
                                 <td class="text-end">
-                                    @foreach (string role in Model.Role)
+                                    @foreach (var role in roles)
                                     {
-                                        @Html.DisplayFor(u => role)
+                                        <input type="checkbox" value="@role.Name" @(Html.Raw(role.Attached ? "checked=\"checked\"" : ""))/>
+                                        @role.Name
                                     }
                                 </td>
                             }
@@ -69,22 +74,16 @@
                             {
                                 <td class="text-end">No roles attached</td>
                             }
-
                         </tr>
-
-
-
                         </tbody>
                     </table>
-
                 </div>
                 <div class="row">
-                    <form asp-action="Delete">
-                        <input type="hidden" asp-for="User.Id"/>
-                        <input class="btn btn-primary" value="SAve" type="submit"/>
-                    </form>
+                    @* TODO *@
+                    @* <input class="btn btn-warning" value="Edit" type="submit"/> *@
                 </div>
             </div>
+            </form>
         </div>
         <div class="col-3"></div>
     </div>

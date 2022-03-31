@@ -78,12 +78,6 @@ app.Run();
 
 void AddAuthorizationPolicy(IServiceCollection service)
 {
-    // // Adding authorization
-    // service.AddAuthorization((option) =>
-    // {
-    //     // Adding policy with required claim added in login.cshtml.cs
-    //     option.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("EmployeeNumber"));
-    // });
     service.AddAuthorization((option) =>
     {
         // Adding policy with required claim added in login.cshtml.cs

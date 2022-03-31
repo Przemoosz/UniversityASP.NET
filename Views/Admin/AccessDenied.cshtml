@@ -1,0 +1,13 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityUser;
+
+@{
+    ViewData["Title"] = "Cant delete this user";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    
+    <div class="row">
+        <h3 class="text-danger">Cant Delete Admin User with username @Html.DisplayFor(n => Model.UserName)</h3>
+    </div>
+</div>

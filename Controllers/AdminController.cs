@@ -58,7 +58,45 @@ public class AdminController: Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> Details(string id)
+    {
+        var selectedUser = await _userContext.Users.Where(u => u.Id.Equals(id)).FirstOrDefaultAsync();
+        if (selectedUser is null)
+        {
+            return NotFound();
+        }
+
+        var attachedRole = await _userContext.GetRolesAsync(selectedUser);
+        var allRoles = from role in _roleContext.Roles select role;
+        List<AttachedRolesData> attachedRolesModel = new List<AttachedRolesData>();
+        foreach (var role in allRoles)
+        {
+            if (attachedRole.Contains(role.Name))
+            {
+                attachedRolesModel.Add(new AttachedRolesData(){Name = role.Name,Attached = true});
+            }
+            else
+            {
+                attachedRolesModel.Add(new AttachedRolesData(){Name = role.Name,Attached = false});
+            }
+            Console.WriteLine(role.Name);
+        }
+
+        ViewBag.Roles = attachedRolesModel;
+        return View(new AdminUserDisplayModel(){User = selectedUser,Role = attachedRole});
+    }
     
+    // TODO
+    // [HttpPost]
+    // [ValidateAntiForgeryToken]
+    // [ActionName("Details")]
+    // public async Task<IActionResult> AssignRoles(int? id, string[] selectedRoles)
+    // {
+    //     Console.WriteLine("d");
+    //     return RedirectToAction(nameof(Details), new {id = id});
+    // }
+
+    [HttpGet]
     public async Task<IActionResult> Delete(string? id)
     {
         if (id is null)
@@ -77,6 +115,12 @@ public class AdminController: Controller
         {
             userRoles = null;
         }
+
+        if (userRoles is not null && userRoles.Contains("Admin"))
+        {
+            return View("AccessDenied", userToDelete);
+        }
+        
         return View(new AdminUserDisplayModel(){User = userToDelete, Role = userRoles});
     }
     [HttpPost]
@@ -85,6 +129,12 @@ public class AdminController: Controller
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
         var userToDelete = await _userContext.Users.Where(i => i.Id.Equals(id)).SingleAsync();
+        // Second protection against deleting admin user
+        var roles = await _userContext.GetRolesAsync(userToDelete);
+        if (roles is not null && roles.Contains("Admin"))
+        {
+           return View("AccessDenied", userToDelete);
+        }
         try
         {
             await _userContext.DeleteAsync(userToDelete);

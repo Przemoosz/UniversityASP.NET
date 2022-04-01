@@ -35,6 +35,7 @@
                             @foreach (var role in user.Role)
                             {
                                 @Html.DisplayFor(u => role)
+                                @: 
                             }
                         }
                         else
@@ -47,7 +48,7 @@
                         
                         @if (user.Role is not null && user.Role.Contains("Admin"))
                         {
-                            @:Cant delete admin!
+                            @:Delete
                         }
                         else
                         {

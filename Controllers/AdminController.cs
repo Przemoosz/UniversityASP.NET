@@ -58,7 +58,7 @@ public class AdminController: Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Details(string id)
+    public async Task<IActionResult> Details(string id, bool success=false, bool idError=false)
     {
         var selectedUser = await _userContext.Users.Where(u => u.Id.Equals(id)).FirstOrDefaultAsync();
         if (selectedUser is null)
@@ -79,22 +79,68 @@ public class AdminController: Controller
             {
                 attachedRolesModel.Add(new AttachedRolesData(){Name = role.Name,Attached = false});
             }
-            Console.WriteLine(role.Name);
+            // Console.WriteLine(role.Name);
         }
 
+        if (idError)
+        {
+            ViewData["Error"] = "You are trying to edit user with id that does not exists!";
+        }
+        if(success) ViewData["Success"] = "User updated successfully!";
+        
         ViewBag.Roles = attachedRolesModel;
         return View(new AdminUserDisplayModel(){User = selectedUser,Role = attachedRole});
     }
     
-    // TODO
-    // [HttpPost]
-    // [ValidateAntiForgeryToken]
-    // [ActionName("Details")]
-    // public async Task<IActionResult> AssignRoles(int? id, string[] selectedRoles)
-    // {
-    //     Console.WriteLine("d");
-    //     return RedirectToAction(nameof(Details), new {id = id});
-    // }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [ActionName("Details")]
+    public async Task<IActionResult> AssignRoles(string? id, string[] selectedRoles)
+    {
+        if (id is null)
+        {
+            // That is impossible XD
+            // ViewData["Error"] = "You are trying to edit user with id that does not exists!";
+            return RedirectToAction(nameof(Details), new {id = id, idError=true});
+        }
+
+        var selectedUser = await _userContext.Users.Where(u => u.Id.Equals(id)).FirstOrDefaultAsync();
+        var roleQuery = from role in _roleContext.Roles select role.Name;
+        IEnumerable<string> allRoles = await roleQuery.ToListAsync();
+        if (selectedUser is null)
+        {
+            // ViewData["Error"] = "You are trying to edit user with id that does not exists!";
+            return RedirectToAction(nameof(Details), new {id = id, idError=true});
+        }
+        // if (selectedRoles.Length == 0)
+        // {
+        //     return RedirectToAction(nameof(Details), new {id = id});
+        // }
+
+        if (ModelState.IsValid)
+        {
+            var userRoles = await _userContext.GetRolesAsync(selectedUser);
+            foreach (var role in selectedRoles)
+            {
+                if (!userRoles.Contains(role))
+                {
+                    await _userContext.AddToRoleAsync(selectedUser, role);
+                }
+            }
+
+            foreach (var role in allRoles)
+            {
+                if (!selectedRoles.Contains(role) && userRoles.Contains(role))
+                { 
+                    await _userContext.RemoveFromRoleAsync(selectedUser, role);
+                }
+            }
+            await _context.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(Details), new {id = id, success=true});
+        }
+        return RedirectToAction(nameof(Details), new {id = id});
+    }
 
     [HttpGet]
     public async Task<IActionResult> Delete(string? id)

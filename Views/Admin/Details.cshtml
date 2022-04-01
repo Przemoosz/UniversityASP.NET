@@ -1,7 +1,7 @@
 ﻿@model FirstProject.Models.ViewModels.AdminUserDisplayModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = $"{Model.User.UserName} details";
     Layout = "_Layout";
 }
 
@@ -11,7 +11,7 @@
         <div class="col-3"></div>
         <div class="col-6">
             <form asp-action="Details">
-                <input type="hidden" asp-for="User.Id" value="@Model.User.Id"/>
+                <input type="hidden" name="id" value="@Model.User.Id"/>
             <div class="container">
                 @if (ViewData["DatabaseError"] is not null)
                 {
@@ -21,9 +21,25 @@
                         </p>
                     </div>
                 }
+                @if (ViewData["Error"] is not null)
+                {
+                    <div class="row text-start">
+                        <p class="text-danger">
+                            @ViewData["Error"]
+                        </p>
+                    </div>
+                }
+                @if (ViewData["Success"] is not null)
+                {
+                    <div class="row text-start">
+                        <p class="text-success">
+                            @ViewData["Success"]
+                        </p>
+                    </div>
+                }
                 <div class="row text-center border-2 border-dark border-bottom">
                     <h3>
-                        Delete User
+                       User details
                     </h3>
                 </div>
                 <div class="row">
@@ -65,7 +81,7 @@
                                 <td class="text-end">
                                     @foreach (var role in roles)
                                     {
-                                        <input type="checkbox" value="@role.Name" @(Html.Raw(role.Attached ? "checked=\"checked\"" : ""))/>
+                                        <input type="checkbox" name="selectedRoles" value="@role.Name" @(Html.Raw(role.Attached ? "checked=\"checked\"" : ""))/>
                                         @role.Name
                                     }
                                 </td>
@@ -80,7 +96,8 @@
                 </div>
                 <div class="row">
                     @* TODO *@
-                    @* <input class="btn btn-warning" value="Edit" type="submit"/> *@
+                    <input class="btn btn-warning" value="Edit roles" type="submit"/>
+                    <a asp-controller="Admin" asp-action="Users" class="btn btn-primary">Return to users list</a>
                 </div>
             </div>
             </form>

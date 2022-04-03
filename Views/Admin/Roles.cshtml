@@ -4,8 +4,79 @@
     ViewData["Title"] = "Roles";
     Layout = "_Layout";
 }
-@foreach (var a in Model)
-{
-    <p>@a.</p>
-}
-<h2>title</h2>
+@* @foreach (var a in Model) *@
+@* { *@
+@*     <p>@a.</p> *@
+@* } *@
+@* <h2>title</h2> *@
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+        </div>
+        <div class="col-6">
+            <div class="row border-dark border-bottom text-center">
+                <h4>Roles available</h4>
+            </div>
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th class="text-start">Permission</th>
+                        <th class="text-end">Role attached</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="text-start">
+                            Admin page
+                        </td>
+                        <td class="text-end">
+                            Admin
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            University CRUD
+                        </td>
+                        <td class="text-end">
+                            Admin, User, NoRole
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            Faculty CRUD
+                        </td>
+                        <td class="text-end">
+                            Admin, User, NoRole
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            Course CRUD
+                        </td>
+                        <td class="text-end">
+                            Admin, User, NoRole
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            Transaction CRUD
+                        </td>
+                        <td class="text-end">
+                            Admin, User, NoRole
+                        </td>
+                    </tr>
+                    
+                    
+                    </tbody>
+                </table>
+            </div>
+            <div class="row text-center">
+                <a asp-controller="Admin" asp-action="Index">Return to admin page</a>
+            </div>
+        </div>
+        <div class="col-3">
+        </div>
+        </div>
+    
+</div>

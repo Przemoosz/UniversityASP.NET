@@ -81,7 +81,8 @@
                 <div class="row">
                     <form asp-action="Delete">
                         <input type="hidden" asp-for="User.Id"/>
-                        <input class="btn btn-primary" value="SAve" type="submit"/>
+                        <input class="btn btn-primary" value="Delete user" type="submit"/>
+                        <a asp-controller="Admin" asp-action="Users" class="btn btn-primary">Return to users list</a>
                     </form>
                 </div>
             </div>

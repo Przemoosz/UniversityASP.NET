@@ -33,25 +33,87 @@ public class AdminController: Controller
 
     [HttpGet]
     // [Authorize(Policy = "Administrator")]
-    public async Task<IActionResult> Users()
+    public async Task<IActionResult> Users(string? usernameSearchString, UsersRolesEnum? usersRole)
     {
         // var user = _userContext.Users.Include()
         
         var users = from user in _userContext.Users select user;
-        List<AdminUserDisplayModel> usersAndRoles = new List<AdminUserDisplayModel>(users.Count());
-        foreach (var user in users)
+        if (!string.IsNullOrEmpty(usernameSearchString))
         {
-            var role = await _userContext.GetRolesAsync(user);
-            if (role.Count == 0)
-            {
-                role = null;
-            }
-            usersAndRoles.Add(new AdminUserDisplayModel(){User = user,Role = role});
+            users = from user in _userContext.Users where user.UserName.Contains(usernameSearchString) select user;
+            ViewData["usernameSearchString"] = usernameSearchString;
         }
-        
+
+        List<AdminUserDisplayModel> usersAndRoles = new List<AdminUserDisplayModel>(users.Count());
+        if (usersRole is not null)
+        {
+            foreach (var user in users)
+            {
+                var role = await _userContext.GetRolesAsync(user);
+
+
+                if (usersRole is not null)
+                {
+                    if (checkRole(role, usersRole))
+                    {
+                        if (role.Count == 0)
+                        {
+                            role = null;
+                        }
+                        usersAndRoles.Add(new AdminUserDisplayModel(){User = user,Role = role});
+                    }
+                }
+            }
+
+            ViewData["GroupByRoles"] = usersRole;
+            return View(usersAndRoles);
+        }
+        else
+        {
+            foreach (var user in users)
+            {
+                var role = await _userContext.GetRolesAsync(user);
+                if (role.Count == 0)
+                {
+                    role = null;
+                }
+                usersAndRoles.Add(new AdminUserDisplayModel(){User = user,Role = role});
+            }
+        }
         return View(usersAndRoles);
     }
 
+    private static bool checkRole(IEnumerable<string> attachedRoles, UsersRolesEnum? role)
+    {
+        switch (role)
+        {
+            case UsersRolesEnum.Admin:
+                if (attachedRoles.Contains("Admin"))
+                {
+                    return true;
+                }
+
+                return false;
+                
+            case UsersRolesEnum.User:
+                if (attachedRoles.Contains("User"))
+                {
+                    return true;
+                }
+
+                return false;
+            case UsersRolesEnum.NoRole:
+                if (attachedRoles.Count()==0)
+                {
+                    return true;
+                }
+
+                return false;
+            default:
+                return false;
+        }
+        return false;
+    }
     public async Task<IActionResult> Index()
     {
         return View();
@@ -99,7 +161,6 @@ public class AdminController: Controller
     {
         if (id is null)
         {
-            // That is impossible XD
             // ViewData["Error"] = "You are trying to edit user with id that does not exists!";
             return RedirectToAction(nameof(Details), new {id = id, idError=true});
         }

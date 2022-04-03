@@ -81,7 +81,6 @@ namespace FirstProject.Controllers
             
             return View(await transactionList.FirstOrDefaultAsync());
         }
-
         
         
         // GET: Faculty/Courses?FacultyId=[id]

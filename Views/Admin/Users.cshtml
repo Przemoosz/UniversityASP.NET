@@ -7,6 +7,20 @@
 
 <div class="container">
     <div class="row">
+        <form asp-action="Users" method="get">
+            Search by user name:
+            <input class="form-label" type="text" name="usernameSearchString" value ="@ViewData["usernameSearchString"]"/>
+            <select name="usersRole" asp-items="@Html.GetEnumSelectList<FirstProject.Models.UsersRolesEnum>()">
+                @if (ViewData["GroupByRoles"] is not null)
+                {
+                    <option value="@ViewData["GroupByRoles"]">@Enum.GetName(typeof(UsersRolesEnum), ViewData["GroupByRoles"]!)</option>
+                }
+                <option value="@null">----------</option>
+            </select>
+            <input type="submit" value="Search" class="btn-success btn-sm "/>
+        </form>
+    </div>
+    <div class="row">
         <table class="table">
             <thead>
             <tr>
@@ -19,7 +33,7 @@
                 <th>Options</th>
             </tr>
             </thead>
-        
+
             <tbody>
             @foreach (var user in Model)
             {
@@ -30,7 +44,7 @@
                     <td>@Html.DisplayFor(u => user.User.LastName)</td>
                     <td>@Html.DisplayFor(u => user.User.Email)</td>
                     <td>
-                        @if (user.Role is not null )
+                        @if (user.Role is not null)
                         {
                             @foreach (var role in user.Role)
                             {
@@ -45,7 +59,7 @@
 
                     </td>
                     <td>
-                        
+
                         @if (user.Role is not null && user.Role.Contains("Admin"))
                         {
                             @:Delete
@@ -53,15 +67,18 @@
                         else
                         {
                             <a asp-controller="Admin" asp-action="Delete" asp-route-id="@user.User.Id">Delete</a>
-                            
+
                         }
                         <a asp-controller="Admin" asp-action="Details" asp-route-id="@user.User.Id">Roles</a>
                     </td>
                 </tr>
-     
+
             }
             </tbody>
         </table>
 
+    </div>
+    <div class="row text-center">
+        <a asp-controller="Admin" asp-action="Index">Return to admin page</a>
     </div>
 </div>

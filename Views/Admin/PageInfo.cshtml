@@ -1,0 +1,91 @@
+﻿@model FirstProject.Models.ViewModels.PageInfoDisplayModel
+
+@{
+    ViewData["Title"] = "Page Info";
+    Layout = "_Layout";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+        </div>
+        <div class="col-6">
+            <div class="row border-dark border-bottom text-center">
+                <h4>University Management Page Info</h4>
+            </div>
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th class="text-start">Data</th>
+                        <th class="text-end">Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="text-start">
+                            @Html.DisplayNameFor((d => d.UserCount))
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(d => d.UserCount)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            @Html.DisplayNameFor((d => d.Users))
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(d => d.Users)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            @Html.DisplayNameFor((d => d.Admins))
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(d => d.Admins)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            @Html.DisplayNameFor((d => d.TotalUniversities))
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(d => d.TotalUniversities)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            @Html.DisplayNameFor((d => d.TotalFaculties))
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(d => d.TotalFaculties)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            @Html.DisplayNameFor((d => d.TotalTransactions))
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(d => d.TotalTransactions)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-start">
+                            @Html.DisplayNameFor((d => d.TotalCourses))
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(d => d.TotalCourses)
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row text-center">
+                <a asp-controller="Admin" asp-action="Index">Return to admin page</a>
+            </div>
+        </div>
+        <div class="col-3">
+        </div>
+        </div>
+    
+</div>

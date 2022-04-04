@@ -255,5 +255,24 @@ public class AdminController: Controller
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Users));
     }
-    
+
+    [HttpGet]
+    public async Task<IActionResult> PageInfo()
+    {
+        string adminUuid = await _roleContext.Roles.Where(x => x.Name.Equals("Admin")).Select(x => x.Id).FirstAsync();
+        string userUuid = await _roleContext.Roles.Where(x => x.Name.Equals("User")).Select(x => x.Id).FirstAsync();
+
+        Console.WriteLine(adminUuid);
+        Console.WriteLine(userUuid);
+        PageInfoDisplayModel displayModel = new PageInfoDisplayModel();
+        displayModel.UserCount = await _userContext.Users.CountAsync();
+        displayModel.Admins= await _context.UserRoles.Where(u => u.RoleId.Equals(adminUuid)).CountAsync();
+        displayModel.Users = await _context.UserRoles.Where(u => u.RoleId.Equals(userUuid)).CountAsync();
+        displayModel.TotalUniversities = await _context.University.CountAsync();
+        displayModel.TotalFaculties = await _context.Faculty.CountAsync();
+        displayModel.TotalCourses = await _context.Course.CountAsync();
+        displayModel.TotalTransactions = await _context.Transaction.CountAsync();
+        
+        return View(displayModel);
+    }
 }

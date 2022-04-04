@@ -22,10 +22,26 @@
                     <table class="table-boardless">
                         <tbody>
                         <tr>
-                            <a asp-controller="Admin" asp-action="Users">Users Page</a>
+                            <td>
+                                <a asp-controller="Admin" asp-action="Users">Users Page</a>
+                            </td>
+                            <td class="text-end">User overview, user delete and user role management</td>
                         </tr>
                         <tr>
-                           <a asp-controller="Admin" asp-action="Roles">Roles</a>
+                            <td>
+                                <a asp-controller="Admin" asp-action="Roles">Roles</a>
+                            </td>
+                            <td class="text-end">
+                                Here you can see all available roles and their permission
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a asp-controller="Admin" asp-action="PageInfo">Page info</a>
+                            </td>
+                            <td class="text-end">
+                                Informations about page including numbers and many more
+                            </td>
                         </tr>
                         </tbody>
                     </table>

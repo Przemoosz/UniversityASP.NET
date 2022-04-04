@@ -10,12 +10,17 @@
         <form asp-action="Users" method="get">
             Search by user name:
             <input class="form-label" type="text" name="usernameSearchString" value ="@ViewData["usernameSearchString"]"/>
+            Group by: 
             <select name="usersRole" asp-items="@Html.GetEnumSelectList<FirstProject.Models.UsersRolesEnum>()">
                 @if (ViewData["GroupByRoles"] is not null)
                 {
-                    <option value="@ViewData["GroupByRoles"]">@Enum.GetName(typeof(UsersRolesEnum), ViewData["GroupByRoles"]!)</option>
+                    <optgroup label="Selected">
+                        <option value="@ViewData["GroupByRoles"]">@Enum.GetName(typeof(UsersRolesEnum), ViewData["GroupByRoles"]!)</option>
+                    </optgroup>
                 }
-                <option value="@null">----------</option>
+                <optgroup label="To select">
+                    <option value="@null">----------</option>
+                </optgroup>
             </select>
             <input type="submit" value="Search" class="btn-success btn-sm "/>
         </form>

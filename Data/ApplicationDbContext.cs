@@ -25,7 +25,9 @@ namespace FirstProject.Data
         public DbSet<FirstProject.Models.Transaction> Transaction { get; set; }
         public DbSet<FirstProject.Models.Course> Course { get; set; }
         
-        // public DbSet<>
+        public DbSet<FirstProject.Models.Abstarct.Person> Person { get; set; }
+        
+        public DbSet<FirstProject.Models.StudentModel> Student { get; set; }
     }
 
 

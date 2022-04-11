@@ -73,7 +73,6 @@ namespace FirstProject.Controllers
         
         // GET: University/Choose
         [HttpGet]
-        [Authorize(Policy = "RequireAdmin")]
         public async  Task<IActionResult> Choose()
         {
             var data = from uni in _context.University select new ChooseUniversityModelView(){UniversityName = uni.UniversityName, Employed = uni.Employed, FacultiesCount = uni.Faculties.Count()};

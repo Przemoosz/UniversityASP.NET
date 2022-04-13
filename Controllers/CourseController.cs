@@ -127,6 +127,7 @@ namespace FirstProject.Controllers
             // Change Include methods!
             Course? courseToUpdate = await _context.Course.Include(i => i.Faculty).ThenInclude(i => i.University).Where(c => c.CourseID == id)
                 .FirstOrDefaultAsync();
+                
             // Faculty? connectedFaculty = await _context.Faculty.Where(f => f.FacultyID == courseToUpdate.FacultyID)
             //     .FirstOrDefaultAsync();
             

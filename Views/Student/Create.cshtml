@@ -1,0 +1,59 @@
+﻿@model FirstProject.Models.ViewModels.StudentCUModelView
+@{
+    ViewData["Title"] = "title";
+    Layout = "_Layout";
+}
+<h1>Create</h1>
+<h4>Course</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <input type="hidden" asp-for="StudentModel.RowVersion" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StudentModel.FirstName" class="control-label"></label>
+                <input asp-for="StudentModel.FirstName" class="form-control" />
+                <span asp-validation-for="StudentModel.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentModel.LastName" class="control-label"></label>
+                <input asp-for="StudentModel.LastName" class="form-control"/>
+                <span asp-validation-for="StudentModel.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentModel.Gender" class="control-label"></label>
+                <select asp-for="StudentModel.Gender" asp-items="@Html.GetEnumSelectList<GenderEnum>()" class="form-control"></select>
+                <span asp-validation-for="StudentModel.Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentModel.RegisterDate" class="control-label"></label>
+                <input asp-for="StudentModel.RegisterDate" class="form-control"/>
+                <span asp-validation-for="StudentModel.RegisterDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentModel.SemesterNumber" class="control-label"></label>
+                <select asp-for="StudentModel.SemesterNumber" asp-items="@Html.GetEnumSelectList<SemesterNumberEnum>()" class="form-control"></select>
+                <span asp-validation-for="StudentModel.SemesterNumber" class="text-danger"></span>
+            </div>
+            
+           @foreach (var course in Model.Course)
+           {
+               <input type="checkbox" name="selectedCourses" value="@course.CourseName"/>
+               @Html.DisplayFor(c => course.CourseName)
+               
+           }
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

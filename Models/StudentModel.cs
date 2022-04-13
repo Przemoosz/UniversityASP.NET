@@ -12,8 +12,11 @@ public class StudentModel: Person
     
     [Required]
     [Display(Name = "Register Date")]
-    [DataType(DataType.DateTime)]
+    [DataType(DataType.Date)]
     public DateTime RegisterDate { get; set; }
+    
+    [Timestamp]
+    public byte[] RowVersion { get; set; }
     
     // One to many relation with Courses
     public static ICollection<Course> Courses { get; set; }

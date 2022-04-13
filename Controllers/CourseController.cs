@@ -67,6 +67,7 @@ namespace FirstProject.Controllers
             {
                 course.Faculty = choosedFaculty;
                 course.RowVersion = Array.Empty<byte>();
+                course.Students = new List<StudentModel>();
                 if (ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
                 {
                     ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
@@ -77,7 +78,11 @@ namespace FirstProject.Controllers
                 {
                     ModelState["RowVersion"].ValidationState = ModelValidationState.Valid;
                 }
-                
+
+                if (ModelState["Students"].ValidationState == ModelValidationState.Invalid)
+                {
+                    ModelState["Students"].ValidationState = ModelValidationState.Valid;
+                }
             }
             else
             {

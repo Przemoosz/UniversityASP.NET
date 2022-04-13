@@ -18,6 +18,7 @@ public class Person
     
     [Required]
     [DataType(DataType.Date)]
+    [Display(Name = "Date of birth")]
     public DateTime DateOfBirth { get; set; }
     
     [Display(Name="Full Name")]

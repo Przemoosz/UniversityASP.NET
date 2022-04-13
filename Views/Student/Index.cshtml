@@ -14,10 +14,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.FullName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Gender)
@@ -25,6 +22,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.DateOfBirth)
             </th>
+            <th>
+                @Html.DisplayNameFor(m => m.SemesterNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegisterDate)
+            </th>
+            <th>
+                Attached Courses
+            </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -32,16 +39,32 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
+                @Html.DisplayFor(modelItem => item.FullName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.SemesterNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(m => item.RegisterDate)
+            </td>
+            <td>
+                @if (item.Courses is not null && item.Courses.Count !=0)
+                {
+                    @foreach (Course course in item.Courses)
+                    {
+                        @Html.DisplayFor(i => course.CourseName)
+                    }
+                }
+                else
+                {
+                    @:No courses
+                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

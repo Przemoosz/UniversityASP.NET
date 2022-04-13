@@ -24,7 +24,10 @@ public class Course
     // Tracking Changes in SQL
     [Timestamp]
     public byte[] RowVersion { get; set; }
+    
+    // Relations Section
     public int FacultyID { get; set; }
     
+    public ICollection<StudentModel> Students { get; set; }
     public Faculty Faculty { get; set; }
 }

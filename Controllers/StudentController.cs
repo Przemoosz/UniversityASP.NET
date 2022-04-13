@@ -61,7 +61,7 @@ namespace FirstProject.Controllers
         // POST: Student/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Gender,DateOfBirth")] StudentModel student, int[] selectedCourses)
+        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Gender,DateOfBirth,SemesterNumber,RegisterDate")] StudentModel student, int[] selectedCourses)
         {
             student.RowVersion = Array.Empty<byte>();
             ModelState["RowVersion"].ValidationState = ModelValidationState.Valid;
@@ -87,6 +87,7 @@ namespace FirstProject.Controllers
                     }
                 }
 
+                student.Courses = courses;
                 ModelState["Courses"].ValidationState = ModelValidationState.Valid;
             }
             if (ModelState.IsValid)

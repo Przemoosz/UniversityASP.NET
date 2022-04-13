@@ -19,5 +19,5 @@ public class StudentModel: Person
     public byte[] RowVersion { get; set; }
     
     // One to many relation with Courses
-    public static ICollection<Course> Courses { get; set; }
+    public ICollection<Course> Courses { get; set; }
 }

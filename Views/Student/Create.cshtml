@@ -1,52 +1,86 @@
-﻿@model FirstProject.Models.ViewModels.StudentCUModelView
+@model FirstProject.Models.StudentModel
+
 @{
-    ViewData["Title"] = "title";
-    Layout = "_Layout";
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int index = 0;
 }
+
 <h1>Create</h1>
-<h4>Course</h4>
-<hr />
+
+<h4>Person</h4>
+@if (ViewData["Error"] is not null)
+{
+    <h4 class="text-danger">Error!</h4>
+    <p class="text-danger">@ViewData["Error"]</p>
+}
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <input type="hidden" asp-for="StudentModel.RowVersion" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="StudentModel.FirstName" class="control-label"></label>
-                <input asp-for="StudentModel.FirstName" class="form-control" />
-                <span asp-validation-for="StudentModel.FirstName" class="text-danger"></span>
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StudentModel.LastName" class="control-label"></label>
-                <input asp-for="StudentModel.LastName" class="form-control"/>
-                <span asp-validation-for="StudentModel.LastName" class="text-danger"></span>
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StudentModel.Gender" class="control-label"></label>
-                <select asp-for="StudentModel.Gender" asp-items="@Html.GetEnumSelectList<GenderEnum>()" class="form-control"></select>
-                <span asp-validation-for="StudentModel.Gender" class="text-danger"></span>
+                <label asp-for="Gender" class="control-label"></label>
+                <select asp-for="Gender" class="form-control" asp-items="@Html.GetEnumSelectList<GenderEnum>()"></select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StudentModel.RegisterDate" class="control-label"></label>
-                <input asp-for="StudentModel.RegisterDate" class="form-control"/>
-                <span asp-validation-for="StudentModel.RegisterDate" class="text-danger"></span>
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StudentModel.SemesterNumber" class="control-label"></label>
-                <select asp-for="StudentModel.SemesterNumber" asp-items="@Html.GetEnumSelectList<SemesterNumberEnum>()" class="form-control"></select>
-                <span asp-validation-for="StudentModel.SemesterNumber" class="text-danger"></span>
+                <label asp-for="SemesterNumber" class="control-label"></label>
+                <select asp-for="SemesterNumber" asp-items="@Html.GetEnumSelectList<SemesterNumberEnum>()" class="form-control"></select>
+                <span asp-validation-for="SemesterNumber" class="text-danger"></span>
             </div>
-            
-           @foreach (var course in Model.Course)
-           {
-               <input type="checkbox" name="selectedCourses" value="@course.CourseName"/>
-               @Html.DisplayFor(c => course.CourseName)
-               
-           }
+            <div class="form-group">
+                <label asp-for="RegisterDate" class="control-label"></label>
+                <input asp-for="RegisterDate" class="form-control"/>
+                <span asp-validation-for="RegisterDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Courses" class="control-label"></label>
+                <table>
+                    
+                </table>
+                @for (int a = 0; a < (ViewBag.Courses.Count / 3); a++)
+                {
+                    <input type="checkbox" name="selectedCourses" value="@ViewBag.Courses[index].CourseID"/>@ViewBag.Courses[index].CourseName @:|
+                    index++;
+                    <input type="checkbox" name="selectedCourses" value="@ViewBag.Courses[index].CourseID"/>@ViewBag.Courses[index].CourseName @:|
+                    index++;
+                    <input type="checkbox" name="selectedCourses" value="@ViewBag.Courses[index].CourseID"/>@ViewBag.Courses[index].CourseName
+                }
+                @if (index < ViewBag.Courses.Count)
+                {
+                    for (int i = 0; i < (ViewBag.Courses.Count - index); i++)
+                    {
+                        <input type="checkbox" name="selectedCourses" value="@ViewBag.Courses[index].CourseID"/>@ViewBag.Courses[index].CourseName @:|
+                    }
+                }
+                <br/>
+                @* @foreach (Course c in ViewBag.Courses)   *@
+                @* { *@
+                @*     <input type="checkbox" name="selectedCourses" value="@c.CourseID"/>@c.CourseName *@
+                @* } *@
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+            
         </form>
+
     </div>
 </div>
 

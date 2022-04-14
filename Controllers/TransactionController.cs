@@ -11,7 +11,7 @@ using FirstProject.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using FirstProject.Controllers;
-
+using FirstProject.Models.Enums;
 namespace FirstProject.Controllers
 {
     public class TransactionController : Controller

@@ -1,4 +1,5 @@
 @model FirstProject.Models.StudentModel
+@using FirstProject.Models.Enums;
 
 @{
     ViewData["Title"] = "Create";
@@ -65,9 +66,10 @@
                 }
                 @if (index < ViewBag.Courses.Count)
                 {
-                    for (int i = 0; i < (ViewBag.Courses.Count - index); i++)
+                    for (int i = 0; i <= (ViewBag.Courses.Count - index); i++)
                     {
-                        <input type="checkbox" name="selectedCourses" value="@ViewBag.Courses[index].CourseID"/>@ViewBag.Courses[index].CourseName @:|
+                        <input type="checkbox" name="selectedCourses" value="@ViewBag.Courses[index].CourseID"/>@ViewBag.Courses[index].CourseName @:
+                        index++;
                     }
                 }
                 <br/>

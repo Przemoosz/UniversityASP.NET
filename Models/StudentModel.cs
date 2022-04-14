@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using FirstProject.Models.Abstarct;
+using FirstProject.Models.Enums;
 
 namespace FirstProject.Models;
 
@@ -18,6 +19,6 @@ public class StudentModel: Person
     [Timestamp]
     public byte[] RowVersion { get; set; }
     
-    // One to many relation with Courses
+    // Many to many relation with Courses
     public ICollection<Course> Courses { get; set; }
 }

@@ -11,6 +11,7 @@ using FirstProject.Data;
 using FirstProject.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using FirstProject.Models.Enums;
 
 namespace FirstProject.Controllers
 {

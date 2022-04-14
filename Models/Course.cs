@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+using FirstProject.Models.Enums;
 namespace FirstProject.Models;
 
 public class Course

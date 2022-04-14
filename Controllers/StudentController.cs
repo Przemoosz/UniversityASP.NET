@@ -25,7 +25,8 @@ namespace FirstProject.Controllers
         // GET: Student
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Student.ToListAsync());
+            var students = _context.Student.Include(s => s.Courses);
+            return View(await students.ToListAsync());
         }
 
         // GET: Student/Details/5
@@ -36,7 +37,7 @@ namespace FirstProject.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student
+            var student = await _context.Student.Include(s => s.Courses)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (student == null)
             {

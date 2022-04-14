@@ -1,4 +1,4 @@
-﻿namespace FirstProject.Models;
+﻿namespace FirstProject.Models.Enums;
 
 public enum GenderEnum
 {

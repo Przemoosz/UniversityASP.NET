@@ -1,6 +1,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -103,50 +104,69 @@ namespace FirstProject.Controllers
         // GET: Student/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Student.FindAsync(id);
-            if (student == null)
+            var student = await _context.Student.Include(s => s.Courses).Where(s => s.ID == id).FirstOrDefaultAsync();
+            if (student is null)
             {
                 return NotFound();
             }
+
+            // var attachedCourses = student.Courses;
+            // ViewData["attachedCourses"] = attachedCourses;
+            var allCoursesQuery = from course in _context.Course select course;
+            ViewBag.Courses = await allCoursesQuery.ToListAsync();
             return View(student);
         }
 
         // POST: Student/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Gender,DateOfBirth")] StudentModel student)
+        public async Task<IActionResult> Edit(int id, int[] selectedCourses, byte[] rowVersion)
         {
-            if (id != student.ID)
+
+            var studentToUpdate = await _context.Student.Include(s => s.Courses).FirstOrDefaultAsync(s => s.ID == id);
+            if (studentToUpdate is null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            List<Course> attachedCourse = new List<Course>(selectedCourses.Length);
+            var allCoursesQuery = from course in _context.Course select course;
+            foreach (Course course in allCoursesQuery)
+            {
+                if (selectedCourses.Contains(course.CourseID))
+                {
+                    attachedCourse.Add(course);
+                }
+            }
+
+            // studentToUpdate.Courses = attachedCourse;
+
+            Person p = await _context.Person.SingleAsync(i => i.ID == id);
+            p.FirstName = "TEST";
+            var update = await TryUpdateModelAsync(p, "", r => r.FirstName, r => r.LastName, r => r.Gender,
+                r => r.DateOfBirth);
+            // var Du = await TryUpdateModelAsync(studentToUpdate, "", s => s.FirstName, s => s.LastName,
+            //     s => s.Gender, s => s.DateOfBirth, s => s.SemesterNumber, s => s.Courses, s => s.RegisterDate);
+            // _context.Entry(studentToUpdate).Property("RowVersion").OriginalValue = rowVersion;
+            if (await TryUpdateModelAsync(studentToUpdate, "", s => s.FirstName, s => s.LastName,
+                    s => s.Gender, s=> s.DateOfBirth, s => s.SemesterNumber, s => s.Courses, s=>s.RegisterDate))
             {
                 try
                 {
-                    _context.Update(student);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details),new {id = id});
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DBConcurrencyException)
                 {
-                    if (!StudentExists(student.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Student/Delete/5

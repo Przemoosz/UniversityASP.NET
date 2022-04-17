@@ -128,7 +128,18 @@ namespace FirstProject.Controllers
         public async Task<IActionResult> Edit(int id, int[] selectedCourses, byte[] rowVersion)
         {
 
-            var studentToUpdate = await _context.Student.Include(s => s.Courses).FirstOrDefaultAsync(s => s.ID == id);
+            // TODO
+            // Fix this LINQ
+            // This should be easier!
+            var studentToUpdate = await _context.Student.Include(s => s.Courses)
+                .ThenInclude(c => c.Faculty)
+                .ThenInclude(c => c.University)
+                .Include(s => s.Courses)
+                .ThenInclude(c=> c.Faculty)
+                .ThenInclude(f => f.Courses)
+                .ThenInclude(c => c.Students)
+                .FirstOrDefaultAsync(s => s.ID == id);
+
             if (studentToUpdate is null)
             {
                 return NotFound();
@@ -144,26 +155,39 @@ namespace FirstProject.Controllers
                 }
             }
 
-            // studentToUpdate.Courses = attachedCourse;
+            studentToUpdate.Courses = attachedCourse;
 
-            Person p = await _context.Person.SingleAsync(i => i.ID == id);
-            p.FirstName = "TEST";
-            var update = await TryUpdateModelAsync(p, "", r => r.FirstName, r => r.LastName, r => r.Gender,
-                r => r.DateOfBirth);
+            // studentToUpdate.Courses = attachedCourse;
+            // Person p = await _context.Person.SingleAsync(i => i.ID == id);
+            // p.FirstName = "TEST";
+            // var update = await TryUpdateModelAsync(p, "", r => r.FirstName, r => r.LastName, r => r.Gender,
+            //     r => r.DateOfBirth);
             // var Du = await TryUpdateModelAsync(studentToUpdate, "", s => s.FirstName, s => s.LastName,
             //     s => s.Gender, s => s.DateOfBirth, s => s.SemesterNumber, s => s.Courses, s => s.RegisterDate);
             // _context.Entry(studentToUpdate).Property("RowVersion").OriginalValue = rowVersion;
+            // await TryUpdateModelAsync(studentToUpdate, "", s => s.FirstName, s => s.LastName,
+            //     s => s.Gender, s => s.DateOfBirth, s => s.SemesterNumber, s => s.Courses, s => s.RegisterDate);
+            // ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
             if (await TryUpdateModelAsync(studentToUpdate, "", s => s.FirstName, s => s.LastName,
-                    s => s.Gender, s=> s.DateOfBirth, s => s.SemesterNumber, s => s.Courses, s=>s.RegisterDate))
+                    s => s.Gender, s=> s.DateOfBirth, s => s.SemesterNumber, s=>s.RegisterDate))
             {
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Details),new {id = id});
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DBConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     throw;
+                }
+            }
+            // Console.Clear();
+            Console.WriteLine("===============");
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
                 }
             }
             return RedirectToAction(nameof(Index));

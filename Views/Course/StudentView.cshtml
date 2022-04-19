@@ -1,0 +1,77 @@
+﻿@model IEnumerable<StudentModel>
+
+@{
+    ViewData["Title"] = "Student Overview";
+    Layout = "_Layout";
+    int a = 1;
+}
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+
+            <div class="row">
+                <h4>
+                    @ViewData["CourseName"]
+                </h4>
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            Full Name
+                        </th>
+                        <th>
+                            Gender
+                        </th>
+                        <th>
+                            Date Of Birth
+                        </th>
+                        <th>
+                            Semester
+                        </th>
+                        <th>
+                            RegisterDate
+                        </th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    @foreach (var student in Model)
+                    {
+                        <tr>
+                            <td>
+                                @a
+                            </td>
+                            <td>
+                                @Html.DisplayFor(s => student.FullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(s => student.Gender)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(s => student.DateOfBirth)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(s => student.SemesterNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(s => student.RegisterDate)
+                            </td>
+                        </tr>
+                        a++;
+
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <a asp-controller="Faculty" asp-action="Courses" asp-route-facultyId="@ViewData["FacultyId"]">Return to Courses page</a>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>

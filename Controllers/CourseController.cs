@@ -261,6 +261,22 @@ namespace FirstProject.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> StudentView(int? id, int facultyId)
+        {
+            ViewData["FacultyId"] = facultyId;
+            Course course = await _context.Course.Where(c => c.CourseID == id).FirstOrDefaultAsync();
+            if (course is null)
+            {
+                return NotFound();
+            }
+
+            var studentsList = await _context.Student.Include(s => s.Courses).Where(s => s.Courses.Contains(course))
+                .ToListAsync();
+            return View(studentsList);
+            
+            // return NotFound();
+        }
         private bool CourseExists(int id)
         {
             return _context.Course.Any(e => e.CourseID == id);

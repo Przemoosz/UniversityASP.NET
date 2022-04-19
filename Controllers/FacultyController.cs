@@ -88,6 +88,7 @@ namespace FirstProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Courses(int facultyId, string? searchString, string? sort, CourseTypeEnum? courseType )
         {
+            ViewData["FacultyId"] = facultyId;
             List<string> orderList = new List<string>(4)
             {
                 "Name Ascending",
@@ -118,6 +119,8 @@ namespace FirstProject.Controllers
                 where (faculty.FacultyID == facultyId)
                 select faculty.Courses;
             IEnumerable<Course> courses = await connectedCourses.FirstOrDefaultAsync();
+            // var courses = _context.Faculty.Include(f => f.Courses)
+            //     .Where(f => f.FacultyID == facultyId).Select(f => f.Courses).AsEnumerable();
             IEnumerable<Course> coursesReturn;
 
             if (courseType is not null)

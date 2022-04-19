@@ -74,7 +74,8 @@ else
                         <th scope="col">No.</th>
                         <th scope="col">Course Name</th>
                         <th scope="col">Total Students</th>
-                        <th scope="col">Course Type</th>
+                        <th scope="col">Course Type</th>                        
+                        <th scope="col">Attached Students</th>
                         <th scope="col">Options</th>
                     </tr>
                     </thead>
@@ -86,9 +87,11 @@ else
                             <td>@Html.DisplayFor(i => course.CourseName)</td>
                             <td>@Html.DisplayFor(i => course.TotalStudents)</td>
                             <td>@Html.DisplayFor(i => course.CourseType)</td>
+                            <td>@Html.DisplayFor(i => course.Students.Count)</td>
                             <td>
                                 <a asp-controller="Course" asp-action="Edit" asp-route-id="@course.CourseID">Edit</a> | 
-                                <a asp-controller="Course" asp-action="Delete" asp-route-id="@course.CourseID">Delete</a>
+                                <a asp-controller="Course" asp-action="Delete" asp-route-id="@course.CourseID">Delete</a> |
+                                <a asp-controller="Course" asp-action="StudentView" asp-route-id="@course.CourseID", asp-route-facultyId="@ViewData["FacultyId"]">Students</a>
                             </td>
                         </tr>
                         a++;
@@ -98,7 +101,7 @@ else
             </div>
             <div class="row">
                 <a asp-controller="Course" asp-action="Create">Create new course</a>
-                <a href="javascript: history.go(-1)">Return to Faculty View</a>
+                <a asp-controller="University" asp-action="Choose">Return to Faculty View</a>
                 
             </div>
         </div>

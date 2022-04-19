@@ -70,7 +70,7 @@ public static class RolesDefaultCreate
             return;
         }
 
-        List<string> roles = new List<string>() {"Admin", "User"};
+        List<string> roles = new List<string>() {"Admin", "User", "Student"};
         foreach (var roleName in roles)
         {
             var role = new RoleStore<IdentityRole>(context);

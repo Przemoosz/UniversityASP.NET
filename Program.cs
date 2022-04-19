@@ -2,6 +2,7 @@ using FirstProject.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FirstProject.Models;
+using FirstProject.PolicyBasedAuthorization;
 using FirstProject.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -74,7 +75,10 @@ if (false)
     }
 }
 app.Run();
-
+Dictionary<string, List<string>> a = new Dictionary<string, List<string>>(2);
+a.Add("RequireUser", new List<string>(1){"User"});
+a.Add("RequireAdmin", new List<string>(1){"Admin"});
+await ConfigurationFile.Save(a);
 
 void AddAuthorizationPolicy(IServiceCollection service)
 {

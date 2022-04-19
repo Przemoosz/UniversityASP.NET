@@ -1,0 +1,8 @@
+{
+  "RequireUser": [
+    "User"
+  ],
+  "RequireAdmin": [
+    "Admin"
+  ]
+}

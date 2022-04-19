@@ -2,6 +2,7 @@
 using FirstProject.Data;
 using FirstProject.Models;
 using FirstProject.Models.ViewModels;
+using FirstProject.PolicyBasedAuthorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,7 @@ public class AdminController: Controller
     public async Task<IActionResult> Roles()
     {
         var models = from role in _roleContext.Roles select role;
+        // await ConfigurationFile.Load();
         return View(await models.ToListAsync());
     }
 
@@ -275,4 +277,15 @@ public class AdminController: Controller
         
         return View(displayModel);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Permissions()
+    {
+        // TODO
+        var activePolicy = await ConfigurationFile.Load();
+        
+        return View(new PermissionViewModel(){JsonPolicy = activePolicy});
+    }
+    
+    
 }

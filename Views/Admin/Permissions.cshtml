@@ -1,0 +1,38 @@
+﻿@model FirstProject.Models.ViewModels.PermissionViewModel
+
+@{
+    ViewData["Title"] = "Permission";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-1">
+        </div>
+        <div class="col-10">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut earum exercitationem numquam placeat praesentium sit tenetur ullam?</div>
+                    <div class="col-4">
+                        @foreach (KeyValuePair<string, List<string>> kvp in Model.JsonPolicy)
+                        {
+                            <h4>
+                                @Html.DisplayFor(v => kvp.Key)
+                            </h4>
+                            <p>
+                                @foreach (string a in kvp.Value)
+                                {
+                                    @Html.DisplayFor(d => a)
+                                }
+                            </p>
+                        }
+                    </div>
+                    <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-1">
+        </div>
+    </div>
+    
+</div>

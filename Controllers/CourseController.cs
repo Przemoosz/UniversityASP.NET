@@ -130,7 +130,10 @@ namespace FirstProject.Controllers
         
             // TODO 
             // Change Include methods!
-            Course? courseToUpdate = await _context.Course.Include(i => i.Faculty).ThenInclude(i => i.University).Where(c => c.CourseID == id)
+            Course? courseToUpdate = await _context.Course.Include(i => i.Faculty)
+                .ThenInclude(i => i.University)
+                .Include(c => c.Students)
+                .Where(c => c.CourseID == id)
                 .FirstOrDefaultAsync();
                 
             // Faculty? connectedFaculty = await _context.Faculty.Where(f => f.FacultyID == courseToUpdate.FacultyID)
@@ -155,12 +158,12 @@ namespace FirstProject.Controllers
                 {
                     _context.Course.Update(courseToUpdate);
                     await _context.SaveChangesAsync();
-                    Console.WriteLine("Done");
+                    // Console.WriteLine("Done");
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException exception)
                 {
-                    Console.WriteLine("Not Done");
+                    // Console.WriteLine("Not Done");
                     var exceptionEntries  = exception.Entries.Single();
                     var clientvalues = (Course) exceptionEntries.Entity;
                     var databaseEntry = exceptionEntries.GetDatabaseValues();

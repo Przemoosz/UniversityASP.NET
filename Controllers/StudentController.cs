@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -125,9 +126,13 @@ namespace FirstProject.Controllers
         // POST: Student/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, int[] selectedCourses, byte[] rowVersion)
+        public async Task<IActionResult> Edit(int? id, int[] selectedCourses, byte[] rowVersion)
         {
 
+            if (id is null)
+            {
+                return NotFound();
+            }
             // TODO
             // Fix this LINQ
             // This should be easier!
@@ -139,14 +144,19 @@ namespace FirstProject.Controllers
                 .ThenInclude(f => f.Courses)
                 .ThenInclude(c => c.Students)
                 .FirstOrDefaultAsync(s => s.ID == id);
+            var allCoursesQuery = from course in _context.Course select course;
 
             if (studentToUpdate is null)
             {
-                return NotFound();
+                StudentModel deletedStudent = new StudentModel();
+                await TryUpdateModelAsync(deletedStudent);
+                deletedStudent.Courses = new List<Course>(0);
+                ModelState.AddModelError(string.Empty, "Cant update student because it was already deleted!");
+                ViewBag.Courses = await allCoursesQuery.ToListAsync();
+                return View(deletedStudent);
             }
 
             List<Course> attachedCourse = new List<Course>(selectedCourses.Length);
-            var allCoursesQuery = from course in _context.Course select course;
             foreach (Course course in allCoursesQuery)
             {
                 if (selectedCourses.Contains(course.CourseID))
@@ -168,6 +178,7 @@ namespace FirstProject.Controllers
             // await TryUpdateModelAsync(studentToUpdate, "", s => s.FirstName, s => s.LastName,
             //     s => s.Gender, s => s.DateOfBirth, s => s.SemesterNumber, s => s.Courses, s => s.RegisterDate);
             // ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
+            _context.Entry(studentToUpdate).Property("RowVersion").OriginalValue = rowVersion;
             if (await TryUpdateModelAsync(studentToUpdate, "", s => s.FirstName, s => s.LastName,
                     s => s.Gender, s=> s.DateOfBirth, s => s.SemesterNumber, s=>s.RegisterDate))
             {
@@ -178,23 +189,87 @@ namespace FirstProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    throw;
+                    var exceptionEntry = ex.Entries.Single();
+                    var clientValeus = (StudentModel) exceptionEntry.Entity;
+                    var databaseEntry = exceptionEntry.GetDatabaseValues();
+                    if (databaseEntry is null)
+                    {
+                        ModelState.AddModelError(string.Empty,"Student was deleted before saving changes. Unable to edit student!");
+                    }
+                    else
+                    {
+                        var databaseValues = (StudentModel) databaseEntry.ToObject();
+                        // TODO
+                        if (databaseValues.FirstName != clientValeus.FirstName)
+                        {
+                            ModelState.AddModelError("FirstName", $"Current Value in database is {databaseValues.FirstName}");
+                        }
+
+                        if (databaseValues.LastName != clientValeus.LastName)
+                        {
+                            ModelState.AddModelError("LastName", $"Current Value in database is {databaseValues.LastName}");
+                        }
+
+                        if (databaseValues.Gender != clientValeus.Gender)
+                        {
+                            ModelState.AddModelError("Gender", $"Current Value in database is {databaseValues.Gender.ToString()}");
+                        }
+
+                        if (databaseValues.RegisterDate != clientValeus.RegisterDate)
+                        {
+                            ModelState.AddModelError("RegisterDate", $"Current Value in database is {databaseValues.RegisterDate}");
+                        }
+
+                        if (databaseValues.SemesterNumber != clientValeus.SemesterNumber)
+                        {
+                            ModelState.AddModelError("SemesterNumber",$"Current Value in database is {databaseValues.SemesterNumber}");
+                        }
+
+                        if (databaseValues.DateOfBirth != clientValeus.DateOfBirth)
+                        {
+                            ModelState.AddModelError("DateOfBirth", $"Current Value in database is {databaseValues.DateOfBirth}");
+                        }
+
+                        // if (!databaseValues.Courses.Equals(clientValeus.Courses))
+                        // {
+                        //     StringBuilder builder = new StringBuilder();
+                        //     if (databaseValues.Courses  is not null)
+                        //     {
+                        //         foreach (Course course in databaseValues.Courses)
+                        //         {
+                        //             builder.Append(course.CourseName);
+                        //             builder.Append(" ");
+                        //         }
+                        //     }
+                        //
+                        //     string ret = builder.ToString();
+                        //
+                        //     ModelState.AddModelError("Courses", $"Current Courses in database: {ret}");
+                        // }
+                        ModelState.AddModelError(string.Empty,"Concurrency Error occurred! This mean that someone have already made a change to this object and your version is not compatible with actual version in database." +
+                                                              " Click save again to force saving your version, or abort changes and return to list using Back to list link. ");
+                        studentToUpdate.RowVersion = (byte[]) databaseValues.RowVersion;
+                        ModelState.Remove("RowVersion");
+                    }
                 }
             }
-            // Console.Clear();
-            Console.WriteLine("===============");
-            foreach (var modelState in ModelState.Values)
-            {
-                foreach (var error in modelState.Errors)
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
-            }
-            return RedirectToAction(nameof(Index));
+            // var allCoursesQuery = from course in _context.Course select course;
+            ViewBag.Courses = await allCoursesQuery.ToListAsync();
+            return View(studentToUpdate);
+            // // Console.Clear();
+            // Console.WriteLine("===============");
+            // foreach (var modelState in ModelState.Values)
+            // {
+            //     foreach (var error in modelState.Errors)
+            //     {
+            //         Console.WriteLine(error.ErrorMessage);
+            //     }
+            // }    
+            // return RedirectToAction(nameof(Index));
         }
 
         // GET: Student/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool concurrencyError=false)
         {
             if (id == null)
             {
@@ -202,24 +277,46 @@ namespace FirstProject.Controllers
             }
 
             var student = await _context.Student
+                .Include(s => s.Courses)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (student == null)
             {
+                if (concurrencyError == true) ;
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 return NotFound();
+            }
+
+            if (concurrencyError == true)
+            {
+                ViewData["ConcurrencyError"] = "You are trying to delete object which was modified during your request! Check new value using 'Back to list' or click delete again to force delete'";
             }
 
             return View(student);
         }
 
         // POST: Student/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(StudentModel student)
         {
-            var student = await _context.Student.FindAsync(id);
-            _context.Student.Remove(student);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            try
+            {
+                if (await _context.Student.AnyAsync(s => s.ID == student.ID))
+                {
+                    _context.Student.Remove(student);
+                    await _context.SaveChangesAsync();
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return RedirectToAction(nameof(Delete), new {id = student.ID, concurrencyError = true});
+            }
         }
 
         private bool StudentExists(int id)

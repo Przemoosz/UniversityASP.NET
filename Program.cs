@@ -75,10 +75,10 @@ if (false)
     }
 }
 app.Run();
-Dictionary<string, List<string>> a = new Dictionary<string, List<string>>(2);
-a.Add("RequireUser", new List<string>(1){"User"});
-a.Add("RequireAdmin", new List<string>(1){"Admin"});
-await ConfigurationFile.Save(a);
+// Dictionary<string, List<string>> a = new Dictionary<string, List<string>>(2);
+// a.Add("RequireUser", new List<string>(1){"User"});
+// a.Add("RequireAdmin", new List<string>(1){"Admin"});
+// await ConfigurationFile.SaveAsync(a);
 
 void AddAuthorizationPolicy(IServiceCollection service)
 {

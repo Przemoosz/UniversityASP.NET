@@ -264,8 +264,8 @@ public class AdminController: Controller
         string adminUuid = await _roleContext.Roles.Where(x => x.Name.Equals("Admin")).Select(x => x.Id).FirstAsync();
         string userUuid = await _roleContext.Roles.Where(x => x.Name.Equals("User")).Select(x => x.Id).FirstAsync();
 
-        Console.WriteLine(adminUuid);
-        Console.WriteLine(userUuid);
+        // Console.WriteLine(adminUuid);
+        // Console.WriteLine(userUuid);
         PageInfoDisplayModel displayModel = new PageInfoDisplayModel();
         displayModel.UserCount = await _userContext.Users.CountAsync();
         displayModel.Admins= await _context.UserRoles.Where(u => u.RoleId.Equals(adminUuid)).CountAsync();
@@ -277,15 +277,84 @@ public class AdminController: Controller
         
         return View(displayModel);
     }
+    
+    private string[] _policyArray = new string[3]
+    {
+        "UniversityCreate",
+        "UniversityDelete",
+        "UniversityOverview"
+    };
 
+    private static Dictionary<string, List<string>> _selectedPermission = new Dictionary<string, List<string>>(3);
+    
     [HttpGet]
     public async Task<IActionResult> Permissions()
     {
         // TODO
-        var activePolicy = await ConfigurationFile.Load();
-        
-        return View(new PermissionViewModel(){JsonPolicy = activePolicy});
+        var activePolicy = await ConfigurationFile.LoadAsync();
+        var roleQuery = from role in _roleContext.Roles select role.Name;
+        SelectList policySelectList = new SelectList(_policyArray);
+        ViewData["PolicySelectList"] = policySelectList;
+        return View(new PermissionViewModel(){
+            JsonPolicy = activePolicy,
+            Role = new SelectList(await roleQuery.ToListAsync()),
+            SelectedPermissions = _selectedPermission
+        });
     }
-    
-    
+
+    [HttpGet]
+    public async Task<IActionResult> PermissionAdd(string? roleName, string? policyName)
+    {
+        if (roleName is null || policyName is null)
+        {
+            return RedirectToAction(nameof(Permissions));
+        }
+        if (_selectedPermission.ContainsKey(policyName))
+        {
+            var roleList = _selectedPermission[policyName];
+            if (!roleList.Contains(roleName))
+            {
+                roleList.Add(roleName);
+            }
+        }
+        else
+        {
+            _selectedPermission.Add(policyName, new List<string>(3){roleName});
+        }
+        return RedirectToAction(nameof(Permissions));
+    }
+
+    [HttpGet]
+    public IActionResult PermissionRemoveAll()
+    {
+        _selectedPermission = new Dictionary<string, List<string>>(3);
+        return RedirectToAction(nameof(Permissions));
+    }
+
+    [HttpGet]
+    public IActionResult PermissionRemove(string? policyName)
+    {
+        if (policyName is null)
+        {
+            RedirectToAction(nameof(Permissions));
+        }
+        if (_selectedPermission.ContainsKey(policyName))
+        {
+            _selectedPermission.Remove(policyName);
+        }
+        else
+        {
+            ViewData["RemoveError"] = "This policy does not exists!";
+            return RedirectToAction(nameof(Permissions));
+        }
+        return RedirectToAction(nameof(Permissions));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> PermissionSave()
+    {
+        await ConfigurationFile.SaveAsync(_selectedPermission);
+        ViewData["Saved"] = "Policy have been saved";
+        return RedirectToAction(nameof(PermissionRemoveAll));
+    }
 }

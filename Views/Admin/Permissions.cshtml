@@ -6,33 +6,128 @@
 }
 
 <div class="container">
+    @if (ViewData["RemoveError"] is not null)
+    {
+        <p class="text-danger">
+            @ViewData["RemoveError"]
+        </p>
+    }
+    @if (ViewData["Saved"] is not null)
+    {
+        <p class="text-success">
+            @ViewData["RemoveError"]
+        </p>
+    }
+    <div class="row"></div>
     <div class="row">
-        <div class="col-1">
-        </div>
-        <div class="col-10">
-            <div class="container">
-                <div class="row">
-                    <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut earum exercitationem numquam placeat praesentium sit tenetur ullam?</div>
-                    <div class="col-4">
-                        @foreach (KeyValuePair<string, List<string>> kvp in Model.JsonPolicy)
-                        {
-                            <h4>
-                                @Html.DisplayFor(v => kvp.Key)
-                            </h4>
-                            <p>
-                                @foreach (string a in kvp.Value)
-                                {
-                                    @Html.DisplayFor(d => a)
-                                }
-                            </p>
-                        }
+        <div class="container">
+            <div class="row">
+                <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut earum exercitationem numquam placeat praesentium sit tenetur ullam?</div>
+                <div class="col-4">
+                    @foreach (KeyValuePair<string, List<string>> kvp in Model.JsonPolicy)
+                    {
+                        <h4>
+                            @Html.DisplayFor(v => kvp.Key)
+                        </h4>
+                        <p>
+                            @foreach (string a in kvp.Value)
+                            {
+                                @Html.DisplayFor(d => a)
+                            }
+                        </p>
+                    }
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <h5>
+                            Connect Role with Policy
+                        </h5>
                     </div>
-                    <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+                    <form asp-action="PermissionAdd" method="get">
+                        <div class="row">
+                            Select Role:
+                            <select asp-items="@Model.Role" name="roleName">
+                                <option value="@null">-----</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            Select Policy:
+                            <select asp-items="@((SelectList) ViewData["PolicySelectList"]!)" name="policyName">
+                                <option value="@null">-----</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <input type="submit" value="Add" class="btn btn-primary"/>
+                        </div>
+                    </form>
+                    <form asp-action="PermissionRemoveAll" method="get">
+                        <div class="row">
+                            <input type="submit" value="Reset" class="btn btn-warning"/>
+                        </div>
+                    </form>
+
+                    @if (Model.SelectedPermissions is not null)
+                    {
+                        <div class="row">
+                            <table class="table table-striped table-success">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        Policy Name
+                                    </th>
+                                    <th>
+                                        Attached Role
+                                    </th>
+                                    <th>
+                                        Options
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (KeyValuePair<string, List<string>> kvp in Model.SelectedPermissions)
+                                {
+                                    <tr>
+                                        <td>
+                                            @kvp.Key
+                                        </td>
+                                        @if (kvp.Value.Count != 0)
+                                        {
+                                            <td>
+                                                @foreach (string role in kvp.Value)
+                                                {
+                                                    @Html.DisplayFor(s => role)
+                                                    @:&nbsp;
+                                                }
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                No role attached
+                                            </td>
+                                        }
+                                        <td>
+                                            <form asp-action="PermissionRemove" method="get">
+                                                <input type="hidden" name="policyName" value="@kvp.Key">
+                                                <input type="submit" value="Remove"/>
+                                            </form>
+
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <form asp-action="PermissionSave" method="get">
+                                <input type="submit" class="btn btn-primary" value="Save"/>
+                            </form>
+                        </div>  
+                    }
                 </div>
             </div>
-        </div>
-        <div class="col-1">
+            
         </div>
     </div>
-    
+
 </div>

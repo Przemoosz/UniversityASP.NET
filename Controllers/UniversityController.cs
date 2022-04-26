@@ -29,6 +29,7 @@ namespace FirstProject.Controllers
         }
 
         // GET: University?UniversityName=[University Name]
+        
         [HttpGet]
         public async Task<IActionResult> Index(string universityName)
         {
@@ -173,6 +174,7 @@ namespace FirstProject.Controllers
         }
 
         // GET: University/Delete/5
+        [Authorize(Policy = "UniversityDelete")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

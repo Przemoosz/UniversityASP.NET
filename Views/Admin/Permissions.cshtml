@@ -22,17 +22,47 @@
     <div class="row">
         <div class="container">
             <div class="row">
-                <div class="col-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut earum exercitationem numquam placeat praesentium sit tenetur ullam?</div>
                 <div class="col-4">
+                    <div class="row">
+                        <h4>
+                            Permission Admin Site
+                        </h4>
+                    </div>
+                    <div class="row text-start">
+                        In this page you can add user role to created previously policy.
+                        At the middle you have all active policy and attached user roles to them, they are load
+                        from AuthorizationConfig.json file. On the right you can add role to policy. If no role and policy is selected
+                        clicking Reset button will cause reset all config file. RequireAdmin and RequireUser are default policy with admin and user roles
+                        <br/>
+                        <br/>
+                        Important!
+                        <br/>
+                        After each change in policy you have to reset server
+                        <br/>
+                        Adding new policy is possible in AdminController.cs file, make sure you add this policy to _policyArray variable.
+                        <br/>
+                        To make use of new policy add Attribute to controller method or whole class [Authorization(Policy="Your new policy name")]
+                    </div>
+                    
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <h4>
+                            Actual policy in Json Config File
+                        </h4>
+                    </div>
+                    
                     @foreach (KeyValuePair<string, List<string>> kvp in Model.JsonPolicy)
                     {
-                        <h4>
+                        @:Policy name:
                             @Html.DisplayFor(v => kvp.Key)
-                        </h4>
+                        
                         <p>
+                            Attached roles:
                             @foreach (string a in kvp.Value)
                             {
                                 @Html.DisplayFor(d => a)
+                                @:&nbsp;
                             }
                         </p>
                     }
@@ -56,16 +86,18 @@
                                 <option value="@null">-----</option>
                             </select>
                         </div>
-                        <div class="row">
+                        <div class="row mt-2">
                             <input type="submit" value="Add" class="btn btn-primary"/>
                         </div>
                     </form>
-                    <form asp-action="PermissionRemoveAll" method="get">
-                        <div class="row">
-                            <input type="submit" value="Reset" class="btn btn-warning"/>
-                        </div>
-                    </form>
-
+                    @if (Model.SelectedPermissions.Count != 0)
+                    {
+                        <form asp-action="PermissionRemoveAll" method="get">
+                            <div class="row mt-2 mb-2">
+                                <input type="submit" value="Remove All" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    }
                     @if (Model.SelectedPermissions is not null)
                     {
                         <div class="row">
@@ -118,11 +150,23 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="row">
-                            <form asp-action="PermissionSave" method="get">
-                                <input type="submit" class="btn btn-primary" value="Save"/>
-                            </form>
-                        </div>  
+                        @if (Model.SelectedPermissions is null || Model.SelectedPermissions.Count == 0)
+                        {
+                            <div class="row">
+                                <form asp-action="PermissionSave" method="get">
+                                    <input type="submit" class="btn btn-warning" value="RESET"/>
+                                </form>
+                            </div>  
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <form asp-action="PermissionSave" method="get">
+                                    <input type="submit" class="btn btn-primary" value="Save"/>
+                                </form>
+                            </div>  
+                        }
+
                     }
                 </div>
             </div>

@@ -55,3 +55,32 @@ Login: admin@example.com
 Password: AdminPassword
 
 Now you have access to admin page
+
+## Policy Settings
+
+You can set to use default policy, or policy based on Json config file named AuthorizationConfig.json.
+To add/remove or reset json file go to Admin page and from there to Permission page.
+
+To enable/disable json based policy go to Program.cs and follow the rules:
+```csharp
+// Chose between: DefaultPolicy or PolicyLoaded from Json Config File
+// Comment/Uncomment line below:
+
+AddAuthorizationPolicyFromJson(builder.Services);
+//AddAuthorizationPolicy(builder.Services);
+```
+Default policy is loaded from json file
+
+To add new policy follow this rules:
+
+1. Go to AdminController.cs
+2. Add new policy name to _policyArray, make sure you change the size of array
+3. Add attributes to method or whole class in controller you want 
+```csharp
+[Authorize(Policy = "Your Policy name")]
+public Task<IActionResult> Foo()
+{
+    // Controller Code
+}
+```
+4. Add role to policy using admin page, or do it by your self in AuthorizationConfig.Json

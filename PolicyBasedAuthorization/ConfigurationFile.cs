@@ -10,6 +10,7 @@ internal static class ConfigurationFile
     
     public static void Save(Dictionary<string, List<string>> Policy)
     {
+        DefaultPolicy(ref Policy);
         var option = new JsonSerializerOptions() {WriteIndented = true};
         var jsonData = JsonSerializer.Serialize(Policy,option);
         File.WriteAllText(_path, jsonData);
@@ -25,6 +26,7 @@ internal static class ConfigurationFile
     
     public static async Task SaveAsync(Dictionary<string, List<string>> Policy)
     {
+        DefaultPolicy(ref Policy);
         var option = new JsonSerializerOptions() {WriteIndented = true};
         var jsonData = JsonSerializer.Serialize(Policy,option);
         await File.WriteAllTextAsync(_path, jsonData);
@@ -36,5 +38,11 @@ internal static class ConfigurationFile
         Dictionary<string, List<string>>? result = new Dictionary<string, List<string>>();
         result = JsonSerializer.Deserialize<Dictionary<string,List<string>>?>(loadedJson);
         return result;
+    }
+
+    private static void DefaultPolicy(ref Dictionary<string,List<string>> dict)
+    {
+        dict.Add("RequireUser", new List<string>(1){"User"});
+        dict.Add("RequireAdmin", new List<string>(1){"Admin"});
     }
 }

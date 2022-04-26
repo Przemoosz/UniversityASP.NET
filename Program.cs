@@ -31,7 +31,11 @@ builder.Services.Configure<IdentityOptions>(option =>
     option.SignIn.RequireConfirmedAccount = false;
 });
 
-AddAuthorizationPolicy(builder.Services);
+// Chose between: DefaultPolicy or PolicyLoaded from Json Config File
+// Comment/Uncomment line below:
+
+AddAuthorizationPolicyFromJson(builder.Services);
+//AddAuthorizationPolicy(builder.Services);
 
 var app = builder.Build();
 
@@ -87,6 +91,28 @@ void AddAuthorizationPolicy(IServiceCollection service)
         // Adding policy with required claim added in login.cshtml.cs
         option.AddPolicy("RequireUser", policy => policy.RequireRole("User"));
         option.AddPolicy("RequireAdmin", policy => policy.RequireRole("Admin"));
+    });
+
+}
+void AddAuthorizationPolicyFromJson(IServiceCollection service)
+{
+    var policy = ConfigurationFile.Load();
+    service.AddAuthorization((option) =>
+    {
+        if (policy is not null)
+        {
+            foreach (KeyValuePair<string, List<string>> kvp in policy)
+            {
+                foreach (string role in kvp.Value)
+                {
+                    option.AddPolicy(kvp.Key, policy => policy.RequireRole(role));
+                }
+            }
+
+        }
+        // Adding policy with required claim added in login.cshtml.cs
+        // option.AddPolicy("RequireUser", policy => policy.RequireRole("User"));
+        // option.AddPolicy("RequireAdmin", policy => policy.RequireRole("Admin"));
     });
 
 }

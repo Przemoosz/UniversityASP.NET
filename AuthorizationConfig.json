@@ -1,5 +1,15 @@
 {
-  "UniversityCreate": [
+  "UniversityOverview": [
+    "User",
+    "Admin"
+  ],
+  "UniversityDelete": [
+    "Admin"
+  ],
+  "RequireUser": [
     "User"
+  ],
+  "RequireAdmin": [
+    "Admin"
   ]
 }

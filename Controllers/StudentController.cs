@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using FirstProject.Data;
 using FirstProject.Models;
 using FirstProject.Models.Abstarct;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FirstProject.Controllers
@@ -18,10 +19,11 @@ namespace FirstProject.Controllers
     public class StudentController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public StudentController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _usersContext;
+        public StudentController(ApplicationDbContext context, UserManager<ApplicationUser> usersContext)
         {
             _context = context;
+            _usersContext = usersContext;
         }
 
         // GET: Student
@@ -39,7 +41,7 @@ namespace FirstProject.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student.Include(s => s.Courses)
+            var student = await _context.Student.Include(s => s.Courses).Include(s => s.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (student == null)
             {
@@ -69,10 +71,14 @@ namespace FirstProject.Controllers
             student.RowVersion = Array.Empty<byte>();
             ModelState["RowVersion"].ValidationState = ModelValidationState.Valid;
 
+            var currentUser = await _usersContext.Users.FirstAsync(u => u.Id.Equals("319c52a9-ad1d-4f19-845d-be6635e1cc21"));
+            student.User = currentUser;
             if (selectedCourses is null || selectedCourses.Length == 0)
             {
                 student.Courses = new List<Course>(0);
             }
+
+            
             else
             {
                 List<Course> courses = new List<Course>(selectedCourses.Length);

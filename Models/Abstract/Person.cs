@@ -22,6 +22,8 @@ public class Person
     [Display(Name = "Date of birth")]
     public DateTime DateOfBirth { get; set; }
     
+    public ApplicationUser? User { get; set; }
+    
     [Display(Name="Full Name")]
     public string FullName
     {

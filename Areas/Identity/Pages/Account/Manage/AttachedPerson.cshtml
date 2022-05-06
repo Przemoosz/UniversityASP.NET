@@ -1,0 +1,27 @@
+﻿@page
+@model FirstProject.Areas.Identity.Pages.Account.Manage.AttachedPerson
+
+@{
+    ViewData["Title"] = "Attached Person";
+    ViewData["ActivePage"] = ManageNavPages.AttachedPerson;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet id ipsam ipsum maxime molestiae nam nihil nulla quo repudiandae voluptatem!</p>
+        @if (Model.ApplicationUser.Persons is not null && Model.ApplicationUser.Persons.Count() != 0)
+        {
+            @foreach (var person in Model.ApplicationUser.Persons)
+            {
+                <p>@Html.DisplayFor(p => person.FullName)</p>
+            }
+        }
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

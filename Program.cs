@@ -32,10 +32,11 @@ builder.Services.Configure<IdentityOptions>(option =>
 });
 
 // Chose between: DefaultPolicy or PolicyLoaded from Json Config File
+// Note: Initialize admin and roles before loading any authorization
 // Comment/Uncomment line below:
 
 AddAuthorizationPolicyFromJson(builder.Services);
-//AddAuthorizationPolicy(builder.Services);
+// AddAuthorizationPolicy(builder.Services);
 
 var app = builder.Build();
 

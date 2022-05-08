@@ -336,6 +336,33 @@ namespace FirstProject.Controllers
             ViewBag.Person = await _context.Person.Include(p => p.User).ToListAsync();
             return View(user);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "RequireUser")]
+        public async Task<IActionResult> UserAttach(int[] selectedPersons)
+        {
+            string userName = HttpContext.User.Identity.Name;
+            var user = await _usersContext.Users.Include(u => u.Persons).FirstAsync(u => u.UserName.Equals(userName));
+            List<Person> selectedPersonsList = new List<Person>(selectedPersons.Length);
+            foreach (int personId in selectedPersons)
+            {
+                var personObject = await _context.Person.AsNoTracking().FirstOrDefaultAsync(p => p.ID == personId);
+                if (personObject is null)
+                {
+                    throw new ArgumentException();
+                }
+
+                personObject.User = user;
+                _context.Update(personObject);
+                selectedPersonsList.Add(personObject);
+            }
+
+            user.Persons = selectedPersonsList;
+            await _usersContext.UpdateAsync(user);
+            await _context.SaveChangesAsync();
+            return View();
+        }
         private bool StudentExists(int id)
         {
             return _context.Student.Any(e => e.ID == id);

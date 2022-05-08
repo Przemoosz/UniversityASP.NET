@@ -7,7 +7,7 @@
 }
 
 <div class="table-responsive">
-    <form asp-action="Index" method="post">
+    <form asp-controller="Student" asp-action="UserAttach" method="post">
         <table class="table table-responsive table-striped">
             <thead>
             <tr class="bg-light">
@@ -32,16 +32,16 @@
                         {
                             @if (Model.Persons is not null)
                             {
-                                <th scope="col" width="10%"><input type="checkbox" value="@person.ID" name="selectedPerson" @(Html.Raw(Model.Persons.Contains(person) ? "checked=\"checked\"" : ""))/></th>
+                                <th scope="col" width="10%"><input type="checkbox" value="@person.ID" name="selectedPersons" @(Html.Raw(Model.Persons.Contains(person) ? "checked=\"checked\"" : ""))/></th>
                             }
                             else
                             {
-                                <th scope="col" width="10%"><input type="checkbox" value="@person.ID" name="selectedPerson"/></th>
+                                <th scope="col" width="10%"><input type="checkbox" value="@person.ID" name="selectedPersons"/></th>
                             }
                         }
                         <th scope="col" width="30%">@Html.DisplayFor(i => person.FullName)</th>
                         <th scope="col" width="30%">@Html.DisplayFor(i => person.DateOfBirth)</th>
-                        @if (person is FirstProject.Models.StudentModel)
+                        @if (person is StudentModel)
                         {
                             <th scope="col" width="30%">Student</th> 
                         }

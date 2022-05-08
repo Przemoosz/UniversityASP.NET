@@ -1,22 +1,46 @@
 ﻿@page
+@using FirstProject.Models
 @model FirstProject.Areas.Identity.Pages.Account.Manage.AttachedPerson
 
 @{
     ViewData["Title"] = "Attached Person";
     ViewData["ActivePage"] = ManageNavPages.AttachedPerson;
+    int i = 1;
 }
 
 <h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
-    <div class="col-md-6">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet id ipsam ipsum maxime molestiae nam nihil nulla quo repudiandae voluptatem!</p>
+    <div class="col-md-8">
+        <h5>Attached persons to your profile</h5>
         @if (Model.ApplicationUser.Persons is not null && Model.ApplicationUser.Persons.Count() != 0)
         {
-            @foreach (var person in Model.ApplicationUser.Persons)
-            {
-                <p>@Html.DisplayFor(p => person.FullName)</p>
-            }
+            <table class="table">
+                <tr>
+                    <th class="text-start">No.</th>
+                    <th class="text-start">Full Name</th>
+                    <th class="text-end">Type</th>
+                    <th class="text-end">Options</th>
+                </tr>
+                @foreach (var person in Model.ApplicationUser.Persons)
+                {
+                    <tr>
+                        <td class="text-start">@i</td>
+                        <td class="text-start">@person.FullName</td>
+                        @if (person is StudentModel)
+                        {
+                            <td class="text-end">Student</td>
+                        }
+                        else
+                        {
+                            <td class="text-end">Other</td>
+                        }
+                        <td class="text-end">Deatach Detail</td>
+                    </tr>
+                    i++;
+                }
+            </table>
+
         }
     </div>
 </div>

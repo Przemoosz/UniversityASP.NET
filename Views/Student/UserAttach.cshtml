@@ -1,0 +1,61 @@
+﻿@using FirstProject.Models.Abstarct
+@model FirstProject.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "User attach";
+    Layout = "_Layout";
+}
+
+<div class="table-responsive">
+    <form asp-action="Index" method="post">
+        <table class="table table-responsive table-striped">
+            <thead>
+            <tr class="bg-light">
+                <th scope="col" width="10%">Attached</th>
+                <th scope="col" width="30%">Fullname</th>
+                <th scope="col" width="30%">Date Of Bitrth</th>
+                <th scope="col" width="30%">Type</th>
+            </tr>
+            </thead>
+            <tbody>
+            @if (ViewBag.Person is not null)
+            {
+                @foreach (var person in (IEnumerable<Person>) ViewBag.Person)
+                {
+                    <tr>
+
+                        @if (person.User is not null && !person.User.Equals(Model))
+                        {
+                            <th scope="col" width="10%">Taken</th>
+                        }
+                        else
+                        {
+                            @if (Model.Persons is not null)
+                            {
+                                <th scope="col" width="10%"><input type="checkbox" value="@person.ID" name="selectedPerson" @(Html.Raw(Model.Persons.Contains(person) ? "checked=\"checked\"" : ""))/></th>
+                            }
+                            else
+                            {
+                                <th scope="col" width="10%"><input type="checkbox" value="@person.ID" name="selectedPerson"/></th>
+                            }
+                        }
+                        <th scope="col" width="30%">@Html.DisplayFor(i => person.FullName)</th>
+                        <th scope="col" width="30%">@Html.DisplayFor(i => person.DateOfBirth)</th>
+                        @if (person is FirstProject.Models.StudentModel)
+                        {
+                            <th scope="col" width="30%">Student</th> 
+                        }
+                        else
+                        {
+                            <th scope="col" width="30%">Person</th>
+                        }
+                    </tr>
+                }
+            }
+
+            </tbody>
+        </table>
+        <input class="btn btn-success" type="submit" value="Save Changes"/>
+    </form>
+
+</div>

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using FirstProject.Data;
 using FirstProject.Models;
 using FirstProject.Models.Abstarct;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -325,6 +326,16 @@ namespace FirstProject.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Policy = "RequireUser")]
+        public async Task<IActionResult> UserAttach()
+        {
+            string userName = HttpContext.User.Identity.Name;
+            var user = await _usersContext.Users.Include(u => u.Persons).FirstOrDefaultAsync(u => u.UserName.Equals(userName));  
+            // var personQuery = from person in _context.Person select person;
+            ViewBag.Person = await _context.Person.Include(p => p.User).ToListAsync();
+            return View(user);
+        }
         private bool StudentExists(int id)
         {
             return _context.Student.Any(e => e.ID == id);

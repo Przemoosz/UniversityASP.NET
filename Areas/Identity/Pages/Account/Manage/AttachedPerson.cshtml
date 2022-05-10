@@ -12,9 +12,10 @@
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-8">
-        <h5>Attached persons to your profile</h5>
+        <h5>Here is list of person your account is attached to</h5>
         @if (Model.ApplicationUser.Persons is not null && Model.ApplicationUser.Persons.Count() != 0)
         {
+            
             <table class="table">
                 <tr>
                     <th class="text-start">No.</th>
@@ -22,6 +23,7 @@
                     <th class="text-end">Type</th>
                     <th class="text-end">Options</th>
                 </tr>
+
                 @foreach (var person in Model.ApplicationUser.Persons)
                 {
                     <tr>
@@ -35,13 +37,19 @@
                         {
                             <td class="text-end">Other</td>
                         }
-                        <td class="text-end">Deatach Detail</td>
+                        <td class="text-end">Detach Detail</td>
                     </tr>
                     i++;
                 }
             </table>
 
         }
+        else
+        {
+            <p>No person is attached to this accout</p>
+            
+        }
+        <p>Click <a asp-controller="Student" asp-action="UserAttach">here</a> to attach to availabe persons</p>
     </div>
 </div>
 

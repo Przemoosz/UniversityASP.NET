@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using FirstProject.Data;
 using FirstProject.Models;
 using FirstProject.Models.Abstarct;
+using FirstProject.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -350,7 +351,14 @@ namespace FirstProject.Controllers
                 var personObject = await _context.Person.AsNoTracking().FirstOrDefaultAsync(p => p.ID == personId);
                 if (personObject is null)
                 {
-                    throw new ArgumentException();
+                    return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
+                    {
+                        ErrorId = 1,
+                        ErrorName = "Selected person does not exists",
+                        ErrorDescription = $"You are trying to attach not existing person with id {personId} to user {userName}",
+                        ErrorPlace = "StudentController - UserAttach - POST",
+                        ErrorSolution = "Check provided id for selected user using debugger"
+                    });
                 }
 
                 personObject.User = user;
@@ -361,7 +369,8 @@ namespace FirstProject.Controllers
             user.Persons = selectedPersonsList;
             await _usersContext.UpdateAsync(user);
             await _context.SaveChangesAsync();
-            return View();
+            ViewBag.Person = await _context.Person.Include(p => p.User).ToListAsync();
+            return View(user);
         }
         private bool StudentExists(int id)
         {

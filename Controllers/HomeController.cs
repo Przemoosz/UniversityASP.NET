@@ -1,6 +1,7 @@
 ﻿using FirstProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using FirstProject.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace FirstProject.Controllers
@@ -35,6 +36,11 @@ namespace FirstProject.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult ErrorPage(ErrorPageModelView errorPageModelView)
+        {
+            return View(errorPageModelView);
         }
     }
 }

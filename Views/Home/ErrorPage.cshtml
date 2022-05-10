@@ -1,0 +1,37 @@
+﻿@model FirstProject.Models.ViewModels.ErrorPageModelView
+
+@{
+    ViewData["Title"] = "Error occurred";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="row">
+        <h5 class="text-danger text-center">Error page</h5>
+        <p class="text-center">@Model.ErrorName</p>
+    </div>
+    <div class="row border border-2">
+        <div class="container">
+            <div class="row">
+                <p>
+                    Error Id: @Model.ErrorId
+                </p>
+            </div>
+            <div class="row">
+                <p>
+                    Description: @Model.ErrorDescription
+                </p>
+            </div>
+            <div class="row">
+                <p>
+                    Place: @Model.ErrorPlace
+                </p>
+            </div>
+            <div class="row">
+                <p>
+                    Solution: @Model.ErrorSolution
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -37,7 +37,9 @@
                         {
                             <td class="text-end">Other</td>
                         }
-                        <td class="text-end">Detach Detail</td>
+                        <td class="text-end">
+                            <a asp-controller="Person" asp-action="DetachPerson" asp-route-personId="@person.ID">Detach</a> Detail
+                        </td>
                     </tr>
                     i++;
                 }
@@ -49,7 +51,7 @@
             <p>No person is attached to this accout</p>
             
         }
-        <p>Click <a asp-controller="Student" asp-action="UserAttach">here</a> to attach to availabe persons</p>
+        <p>Click <a asp-controller="Person" asp-action="UserAttach">here</a> to attach to availabe persons</p>
     </div>
 </div>
 

@@ -326,52 +326,7 @@ namespace FirstProject.Controllers
                 return RedirectToAction(nameof(Delete), new {id = student.ID, concurrencyError = true});
             }
         }
-
-        [HttpGet]
-        [Authorize(Policy = "RequireUser")]
-        public async Task<IActionResult> UserAttach()
-        {
-            string userName = HttpContext.User.Identity.Name;
-            var user = await _usersContext.Users.Include(u => u.Persons).FirstOrDefaultAsync(u => u.UserName.Equals(userName));  
-            // var personQuery = from person in _context.Person select person;
-            ViewBag.Person = await _context.Person.Include(p => p.User).ToListAsync();
-            return View(user);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Policy = "RequireUser")]
-        public async Task<IActionResult> UserAttach(int[] selectedPersons)
-        {
-            string userName = HttpContext.User.Identity.Name;
-            var user = await _usersContext.Users.Include(u => u.Persons).FirstAsync(u => u.UserName.Equals(userName));
-            List<Person> selectedPersonsList = new List<Person>(selectedPersons.Length);
-            foreach (int personId in selectedPersons)
-            {
-                var personObject = await _context.Person.AsNoTracking().FirstOrDefaultAsync(p => p.ID == personId);
-                if (personObject is null)
-                {
-                    return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
-                    {
-                        ErrorId = 1,
-                        ErrorName = "Selected person does not exists",
-                        ErrorDescription = $"You are trying to attach not existing person with id {personId} to user {userName}",
-                        ErrorPlace = "StudentController - UserAttach - POST",
-                        ErrorSolution = "Check provided id for selected user using debugger"
-                    });
-                }
-
-                personObject.User = user;
-                _context.Update(personObject);
-                selectedPersonsList.Add(personObject);
-            }
-
-            user.Persons = selectedPersonsList;
-            await _usersContext.UpdateAsync(user);
-            await _context.SaveChangesAsync();
-            ViewBag.Person = await _context.Person.Include(p => p.User).ToListAsync();
-            return View(user);
-        }
+        
         private bool StudentExists(int id)
         {
             return _context.Student.Any(e => e.ID == id);

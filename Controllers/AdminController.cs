@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using FirstProject.Data;
 using FirstProject.Models;
+using FirstProject.Models.Enums;
 using FirstProject.Models.ViewModels;
 using FirstProject.PolicyBasedAuthorization;
 using Microsoft.AspNetCore.Authorization;

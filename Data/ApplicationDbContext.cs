@@ -28,6 +28,10 @@ namespace FirstProject.Data
         public DbSet<FirstProject.Models.Abstarct.Person> Person { get; set; }
         
         public DbSet<FirstProject.Models.StudentModel> Student { get; set; }
+        
+        public DbSet<FirstProject.Models.Message> Messages { get; set; }
+        
+        public DbSet<FirstProject.Models.MessageBox> MessageBox { get; set; }
     }
 
 

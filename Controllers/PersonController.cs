@@ -75,6 +75,17 @@ public class PersonController : Controller
                 });
             }
 
+            if (personObject.User is not null && personObject.User.Id != user.Id)
+            {
+                return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
+                {
+                    ErrorId = 3,
+                    ErrorName = "Cant attach person, person is already taken",
+                    ErrorDescription = $"You are trying to attach a person '{personObject.FullName}' which is already attached to other user {personObject.User.UserName}",
+                    ErrorPlace = "StudentController - UserAttach - POST",
+                    ErrorSolution = "Detach person from user, and then attach it to this user"
+                });
+            }
             if (personObject.User is not null && personObject.User.Id == user.Id)
             {
                 selectedPersonsList.Add(personObject);
@@ -126,5 +137,28 @@ public class PersonController : Controller
         _context.Update(selectedPerson);
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(UserAttach));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int personId)
+    {
+        var fetchedStudent = await _context.Student.Include(s => s.User).FirstOrDefaultAsync(s => s.ID == personId);
+        if (fetchedStudent is not null)
+        {
+            return View("DetailsStudent", fetchedStudent);
+        }
+        var fetchedPerson = await _context.Person.Include(s => s.User).FirstOrDefaultAsync(s => s.ID == personId);
+        if (fetchedPerson is not null)
+        {
+            return View(fetchedPerson);
+        }
+        return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
+        {
+            ErrorId = 4,
+            ErrorName = "Person not found in DB",
+            ErrorDescription = $"Person with this id {personId} was not found in DB",
+            ErrorPlace = "PersonController - Details - GET",
+            ErrorSolution = "Type other id or create a person with this id. you can also check Db if person which you are looking for exists"
+        });
     }
 }

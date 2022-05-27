@@ -1,0 +1,28 @@
+﻿@model FirstProject.Models.MessageBox
+
+@{
+    ViewData["Title"] = "Conversation Create";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <div class="container">
+                <div class="row border-2 border-bottom text-center">
+                    <h4>Create Conversation</h4>
+                </div>
+                <div class="row">
+                    <form method="post">
+                        <select asp-items="@(ViewBag.Users as SelectList)"></select>
+                        dsghjkl
+                        <input type="submit" class="btn btn-success" value="Create"/>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>

@@ -84,12 +84,12 @@ namespace FirstProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TransactionID,TransactionName,Group,Amount,TransactionDate,FacultyID")] Transaction transaction)
         {
-            Console.WriteLine(transaction.FacultyID);
+            // Console.WriteLine(transaction.FacultyID);
             var selectedFaculty = await _context.Faculty.Where(i => i.FacultyID == transaction.FacultyID).FirstOrDefaultAsync();
             if (selectedFaculty is not null)
             {
                 transaction.Faculty = selectedFaculty;
-                if (ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
+                if (ModelState["Faculty"] is not null && ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
                 {
                     ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
                 }

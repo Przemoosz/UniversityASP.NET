@@ -9,4 +9,8 @@ public class ApplicationUser: IdentityUser
     public string LastName { get; set; }
     
     public IEnumerable<Person> Persons { get; set; }
+    
+    public IEnumerable<Message>? Messages { get; set; }
+    
+    public IEnumerable<MessageBox>? MessageBoxes { get; set; }
 }

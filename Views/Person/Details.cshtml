@@ -1,4 +1,4 @@
-@model FirstProject.Models.StudentModel
+@model FirstProject.Models.Abstarct.Person
 
 @{
     ViewData["Title"] = "Details";
@@ -36,35 +36,16 @@
                             <td class="text-end">@Html.DisplayFor(u => u.Gender)</td>
                         </tr>
                         <tr>
-                            <td class="text-start">@Html.DisplayNameFor(s => s.SemesterNumber)</td>
-                            <td class="text-end">@Html.DisplayFor(u => u.SemesterNumber)</td>
-                        </tr>
-                        @* <tr> *@
-                        @*     <td class="text-start">@Html.DisplayNameFor(s => s.User.Email)</td> *@
-                        @*     <td class="text-end">@Html.DisplayFor(u => u.User.Email)</td> *@
-                        @* </tr> *@
-                        <tr>
-                            <td class="text-start">@Html.DisplayNameFor(s => s.RegisterDate)</td>
-                            <td class="text-end">@Html.DisplayFor(u => u.RegisterDate)</td>
-                        </tr>
-                        <tr>
-                            <td class="text-start">@Html.DisplayNameFor(s => s.Courses)</td>
-                            
-                            @if (Model.Courses is not null && Model.Courses.Count !=0)
+                            <td class="text-start">@Html.DisplayNameFor(s => s.User.UserName)</td>
+                            @if (Model.User is not null)
                             {
-                                
-                                <td class="text-end">
-                                    @foreach (var course in Model.Courses)
-                                    {
-                                        @Html.DisplayFor(c => course.CourseName) @: &nbsp
-                                    }
-                                    </td>
-                                
+                                <td class="text-end">@Html.DisplayFor(u => u.User.UserName)</td>
                             }
                             else
                             {
-                                <td class="text-end">No courses attached</td>
+                                <td class="text-end">No user attached</td>
                             }
+                            
                         </tr>
                         </tbody>
                     </table>

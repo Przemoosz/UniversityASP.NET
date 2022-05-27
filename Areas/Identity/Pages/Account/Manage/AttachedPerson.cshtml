@@ -1,5 +1,6 @@
 ﻿@page
 @using FirstProject.Models
+@using FirstProject.Models.Enums
 @model FirstProject.Areas.Identity.Pages.Account.Manage.AttachedPerson
 
 @{
@@ -38,7 +39,7 @@
                             <td class="text-end">Other</td>
                         }
                         <td class="text-end">
-                            <a asp-controller="Person" asp-action="DetachPerson" asp-route-personId="@person.ID">Detach</a> Detail
+                            <a asp-controller="Person" asp-action="DetachPerson" asp-route-personId="@person.ID">Detach</a> <a asp-controller="Person" asp-action="Details" asp-route-personId="@person.ID">Detail</a>
                         </td>
                     </tr>
                     i++;

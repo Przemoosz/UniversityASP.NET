@@ -68,18 +68,18 @@ namespace FirstProject.Controllers
                 course.Faculty = choosedFaculty;
                 course.RowVersion = Array.Empty<byte>();
                 course.Students = new List<StudentModel>();
-                if (ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
+                if (ModelState["Faculty"] is not null && ModelState["Faculty"].ValidationState == ModelValidationState.Invalid)
                 {
                     ModelState["Faculty"].ValidationState = ModelValidationState.Valid;
                     
                 }
 
-                if (ModelState["RowVersion"].ValidationState == ModelValidationState.Invalid)
+                if (ModelState["RowVersion"] is not null && ModelState["RowVersion"].ValidationState == ModelValidationState.Invalid)
                 {
                     ModelState["RowVersion"].ValidationState = ModelValidationState.Valid;
                 }
 
-                if (ModelState["Students"].ValidationState == ModelValidationState.Invalid)
+                if (ModelState["Students"] is not null && ModelState["Students"].ValidationState == ModelValidationState.Invalid)
                 {
                     ModelState["Students"].ValidationState = ModelValidationState.Valid;
                 }

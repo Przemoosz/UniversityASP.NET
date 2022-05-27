@@ -36,8 +36,11 @@ namespace FirstProject.Controllers
         }
 
         // GET: Student/Details/5
+        
+        // Not used in project
         public async Task<IActionResult> Details(int? id)
         {
+            return NotFound();
             if (id == null)
             {
                 return NotFound();
@@ -50,7 +53,7 @@ namespace FirstProject.Controllers
                 return NotFound();
             }
 
-            return View(student);
+            // return View(student);
         }
 
         // GET: Student/Create

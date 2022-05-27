@@ -1,0 +1,87 @@
+﻿@model FirstProject.Models.StudentModel
+@* This page is for students *@
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="container">
+                <div class="row text-center border-2 border-dark border-bottom">
+                    <h3>
+                       Student details
+                    </h3>
+                </div>
+                <div class="row">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th class="text-start">Information</th>
+                            <th class="text-end">Data</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="text-start">@Html.DisplayNameFor(s => s.FullName)</td>
+                            <td class="text-end">@Html.DisplayFor(u => u.FullName)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">@Html.DisplayNameFor(s => s.DateOfBirth)</td>
+                            <td class="text-end">@Html.DisplayFor(u => u.DateOfBirth)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">@Html.DisplayNameFor(s => s.Gender)</td>
+                            <td class="text-end">@Html.DisplayFor(u => u.Gender)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">@Html.DisplayNameFor(s => s.SemesterNumber)</td>
+                            <td class="text-end">@Html.DisplayFor(u => u.SemesterNumber)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">@Html.DisplayNameFor(s => s.User.UserName)</td>
+                            @if (Model.User is not null)
+                            {
+                                <td class="text-end">@Html.DisplayFor(u => u.User.UserName)</td>
+                            }
+                            else
+                            {
+                                <td class="text-end">No user attached</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td class="text-start">@Html.DisplayNameFor(s => s.RegisterDate)</td>
+                            <td class="text-end">@Html.DisplayFor(u => u.RegisterDate)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">@Html.DisplayNameFor(s => s.Courses)</td>
+                            
+                            @if (Model.Courses is not null && Model.Courses.Count !=0)
+                            {
+                                
+                                <td class="text-end">
+                                    @foreach (var course in Model.Courses)
+                                    {
+                                        @Html.DisplayFor(c => course.CourseName) @: &nbsp
+                                    }
+                                    </td>
+                                
+                            }
+                            else
+                            {
+                                <td class="text-end">No courses attached</td>
+                            }
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <a asp-controller="Student" asp-action="Index" class="btn btn-primary">Return to students list</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    
+</div>

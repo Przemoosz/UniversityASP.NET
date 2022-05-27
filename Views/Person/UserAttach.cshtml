@@ -15,6 +15,7 @@
                 <th scope="col" width="30%">Fullname</th>
                 <th scope="col" width="30%">Date Of Bitrth</th>
                 <th scope="col" width="30%">Type</th>
+                <th scope="col" width="30%">Taken by</th>
             </tr>
             </thead>
             <tbody>
@@ -49,6 +50,15 @@
                         {
                             <th scope="col" width="30%">Person</th>
                         }
+                        @if (person.User is not null)
+                        {
+                            <th scope="col" width="10%">@Html.DisplayFor(d => person.User.UserName)</th>
+                        }
+                        else
+                        {
+                            <th scope="col">&nbsp;</th>
+                        }
+                        
                     </tr>
                 }
             }

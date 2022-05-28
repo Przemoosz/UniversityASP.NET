@@ -1,0 +1,15 @@
+﻿@model IEnumerable<FirstProject.Models.MessageBox>
+
+@{
+    ViewData["Title"] = "User Message Box";
+    Layout = "_Layout";
+}
+
+<h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquid, architecto maxime tenetur unde ut.</h2>
+@foreach (var box in Model)
+{
+    @foreach (var user in box.Participants)
+    {
+        <h4>@Html.DisplayFor(u => user.UserName)</h4>
+    }
+}

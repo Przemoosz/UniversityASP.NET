@@ -113,7 +113,7 @@ public class PersonController : Controller
             {
                 ErrorId = 2,
                 ErrorName = "Can not receive username",
-                ErrorDescription = $"Controller tries to get username from HttpContext.User.Identity ",
+                ErrorDescription = $"Controller tries to get username from HttpContext.User.Identity",
                 ErrorPlace = "DetachPerson - UserAttach - GET",
                 ErrorSolution = "Check if you are logged in"
             });

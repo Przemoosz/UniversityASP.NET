@@ -42,7 +42,7 @@ internal static class ConfigurationFile
 
     private static void DefaultPolicy(ref Dictionary<string,List<string>> dict)
     {
-        dict.Add("RequireUser", new List<string>(1){"User"});
+        dict.Add("RequireUser", new List<string>(2){"User","Admin"});
         dict.Add("RequireAdmin", new List<string>(1){"Admin"});
     }
 }

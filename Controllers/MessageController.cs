@@ -165,10 +165,104 @@ public class MessageController: Controller
                 ErrorSolution = @"Check if you are still logged in!"
             });
         }
-        
-        var messageBox = await _context.MessageBox.Where(b => b.Participants.Contains(currentUser)).Include(b => b.Participants).ToListAsync();
+
+        ViewData["CurrentUser"] = currentUserName;
+        var messageBox = await _context.MessageBox.
+            Where(b => b.Participants.Contains(currentUser))
+            .Include(b => b.Participants).Include(u => u.Messages).ToListAsync();
         // var query = from box in _context.MessageBox where box.Participants.Contains()
         return View(messageBox);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Conversation(int messageBoxId)
+    {
+        var messageBox = await _context.MessageBox.Include(m => m.Messages)
+            .ThenInclude(m => m.User)
+            .Include(m => m.Participants)
+            .Where(m => m.MessageBoxID == messageBoxId)
+            .FirstOrDefaultAsync();
+        var currentUserName  = HttpContext.User.Identity.Name;
+        if (currentUserName is null)
+        {
+            return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
+            {
+                ErrorId = 2,
+                ErrorName = "Can not receive username",
+                ErrorDescription = $"Controller tries to get username from HttpContext.User.Identity",
+                ErrorPlace = "MessageController - Conversation - GET",
+                ErrorSolution = "Check if you are logged in"
+            });
+        }
+
+        var user = await _userContext.Users.Where(u => u.UserName.Equals(currentUserName)).FirstAsync();
+        if (!messageBox.Participants.Contains(user))
+        {
+            return View("AccessDenied");
+        }
+        ViewData["CurrentUser"] = currentUserName;
+        if (messageBox is null)
+        {
+            return NotFound();
+        }
+        
+        return View(messageBox);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Conversation(string messageText, int messageBoxId)
+    {
+        var messageBox = await _context.MessageBox.Include(m => m.Messages).Where(m => m.MessageBoxID == messageBoxId)
+            .FirstOrDefaultAsync();
+        if (messageBox is null)
+        {
+            return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
+            {
+                ErrorId = 7,
+                ErrorName = "Selected Message Box does not exists",
+                ErrorDescription = $"Can not find message box with ID {messageBoxId} in database",
+                ErrorPlace = "MessageController - Conversation - POST",
+                ErrorSolution = "Create Message box and type valid id to route values"
+            });
+        }
+
+        if (messageText is null || messageText.Length == 0)
+        {
+            ViewData["ErrorMessage"] = "Message can not be empty!";
+            return RedirectToAction(nameof(Conversation), new {messageBoxId = messageBoxId});
+        }
+        var currentUserName  = HttpContext.User.Identity.Name;
+        if (currentUserName is null)
+        {
+            return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
+            {
+                ErrorId = 2,
+                ErrorName = "Can not receive username",
+                ErrorDescription = $"Controller tries to get username from HttpContext.User.Identity",
+                ErrorPlace = "MessageController - Conversation - GET",
+                ErrorSolution = "Check if you are logged in"
+            });
+        }
+
+        var user = await _userContext.Users.Where(u => u.UserName.Equals(currentUserName)).FirstOrDefaultAsync();
+        if (user is null)
+        {
+            throw new NotImplementedException();
+        }
+
+        Message message = new Message()
+        {
+            Date = DateTime.Now,
+            Description = messageText,
+            MessageBox = messageBox,
+            MessageBoxID = messageBoxId,
+            User = user
+        };
+        await _context.Messages.AddAsync(message);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Conversation), new {messageBoxId = messageBoxId});
     }
 
 }

@@ -3,13 +3,46 @@
 @{
     ViewData["Title"] = "User Message Box";
     Layout = "_Layout";
+    string currentUsername = (string) ViewData["CurrentUser"]!;
 }
 
-<h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquid, architecto maxime tenetur unde ut.</h2>
-@foreach (var box in Model)
-{
-    @foreach (var user in box.Participants)
-    {
-        <h4>@Html.DisplayFor(u => user.UserName)</h4>
-    }
-}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="container border border-1">
+                <div class="row text-center border-1 border-bottom">
+                    <h4>Your conversations</h4>
+                </div>
+                @foreach (var box in Model)
+                {
+                    <div class="row text-center">
+                        <p>Conversation with: 
+                            <a asp-controller="Message" asp-action="Conversation" asp-route-messageBoxId="@box.MessageBoxID">
+                                @foreach (var username in box.Participants)
+                                {
+                                    @if (!username.UserName.Equals(currentUsername))
+                                    {
+                                        @Html.DisplayFor(m => username.UserName);
+                                    }
+                                }
+                            </a>
+                            </p>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    
+    
+</div>
+@* <div class="row"></div> *@
+@* @foreach (var box in Model) *@
+@* { *@
+@*     @foreach (var user in box.Participants) *@
+@*     { *@
+@*         <h4>@Html.DisplayFor(u => user.UserName)</h4> *@
+@*     } *@
+@* } *@

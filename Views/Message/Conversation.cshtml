@@ -1,0 +1,85 @@
+﻿@model FirstProject.Models.MessageBox;
+
+@{
+    ViewData["Title"] = "Conversation";
+    Layout = "_Layout";
+    string username = (string)ViewData["CurrentUser"]!;
+}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="container">
+                <div class="row border-2 border-bottom text-center">
+                    <h4>Conversation</h4>
+                </div>
+                @if (ViewData["ErrorMessage"] is not null)
+                {
+                    <div class="row text-center text-danger">
+                        <p>
+                            @ViewData["ErrorMessage"];
+                        </p>
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-12">
+                        <div class="container">
+                            @if (Model.Messages is not null && Model.Messages.Count() != 0)
+                            {
+                                @foreach (Message message in Model.Messages)
+                                {
+                                    @if (message.User.UserName.Equals(username))
+                                    {
+                                        <div class="row text-end text-danger">
+                                            <p>
+                                                @Html.DisplayFor(m => message.User.UserName), @Html.DisplayFor(m => message.Date)
+                                            </p>
+                                        </div>
+                                        <div class="row text-end">
+                                            <p>
+                                                @Html.DisplayFor(m => message.Description)
+                                            </p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row text-start">
+                                            @Html.DisplayFor(m => message.User.UserName), @Html.DisplayFor(m => message.Date)
+                                        </div>
+                                        <div class="row text-start">
+                                            <p>
+                                                @Html.DisplayFor(m => message.Description)
+                                            </p>
+                                        </div>
+                                    }
+                                    <div class="row mt-5 bg-black">
+                                        &nbsp;
+                                    </div>
+                                } 
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <p>No messages availble</p>
+                                </div>
+                            }
+                            <div class="row">
+                                <h5>Create message</h5>
+                            </div>
+                            <form method="post">
+                                <div class="row">
+                                    <input type="text" asp-action="Conversation" asp-controller="Messages" name="messageText"/>
+                                    <input type="hidden" asp-action="Conversation" asp-controller="Messages" name="messageBoxId" value="@Model.MessageBoxID">
+                                </div>
+                                <div class="row">
+                                    <input type="submit" class="btn-success"/>
+                                </div>
+                            </form>
+                        </div>       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>

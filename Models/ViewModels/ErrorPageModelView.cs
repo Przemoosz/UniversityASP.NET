@@ -18,7 +18,7 @@ public class ErrorPageModelView
 // 4 - Person not found in DB
 // 5 - User not found in DB
 // 6 - Typed current User username
-// 7
+// 7 - Selected Message Box does not exists
 // 8
 // 9
 // 10

@@ -19,7 +19,7 @@ public class ErrorPageModelView
 // 5 - User not found in DB
 // 6 - Typed current User username
 // 7 - Selected Message Box does not exists
-// 8
+// 8 - User already have conversation with this person
 // 9
 // 10
 // 11

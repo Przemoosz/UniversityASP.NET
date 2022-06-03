@@ -36,8 +36,24 @@ public class MessageController: Controller
                 ErrorSolution = "Check if you are logged in"
             });
         }
+
+        var currentUser = await _userContext.Users.Where(u => u.UserName.Equals(currentUserName)).Include(u => u.MessageBoxes).ThenInclude(m => m.Participants).FirstAsync();
         var userNamesQuery = from user in _userContext.Users select user.UserName;
-        var userNames = await userNamesQuery.ToListAsync();
+        var userNames = userNamesQuery.ToHashSet();
+        if (currentUser.MessageBoxes is not null)
+        {
+            foreach(MessageBox msgbox in currentUser.MessageBoxes)
+            {
+                foreach (var user in msgbox.Participants)
+                {
+                    if (userNames.Contains(user.UserName))
+                    {
+                        userNames.Remove(user.UserName);
+                    }
+                }
+            } 
+        }
+
         userNames.Remove(currentUserName);
         ViewBag.Users = new SelectList(userNames);
         return View();
@@ -48,7 +64,9 @@ public class MessageController: Controller
     public async Task<IActionResult> ConversationCreate(string username)
     {
         Console.WriteLine(username);
-        var user = await  _userContext.Users.Where(u => u.UserName.Equals(username)).FirstOrDefaultAsync();
+        var user = await  _userContext.Users.Where(u => u.UserName.Equals(username))
+            .Include(u => u.MessageBoxes)
+            .ThenInclude(m=> m.Participants).FirstOrDefaultAsync();
         if (user is null)
         {
             return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
@@ -106,6 +124,24 @@ public class MessageController: Controller
                 user
             }
         };
+        if (user.MessageBoxes is not null)
+        {
+            foreach (var box in user.MessageBoxes)
+            {
+                if (box.Equals(msgBox))
+                {
+                    return RedirectToAction("ErrorPage", "Home", new ErrorPageModelView()
+                    {
+                        ErrorId = 8,
+                        ErrorName = "User already have conversation with this person",
+                        ErrorDescription = $"Tried to create message box that already exists ",
+                        ErrorPlace = "MessageController - ConversationCreate - POST",
+                        ErrorSolution = @"Do not type person which have already created conversation with you!"
+                    });
+                }
+            }  
+        }
+
         await _context.MessageBox.AddAsync(msgBox);
         await _context.SaveChangesAsync();
         if (user.MessageBoxes is null)
@@ -132,7 +168,20 @@ public class MessageController: Controller
         }
         await _userContext.UpdateAsync(currentUser);
 
-        var userNames = await _userContext.Users.Select(u => u.UserName).ToListAsync();
+        var userNames = _userContext.Users.Select(u => u.UserName).ToHashSet();
+        if (currentUser.MessageBoxes is not null)
+        {
+            foreach(MessageBox msgbox in currentUser.MessageBoxes)
+            {
+                foreach (var us in msgbox.Participants)
+                {
+                    if (userNames.Contains(us.UserName))
+                    {
+                        userNames.Remove(us.UserName);
+                    }
+                }
+            } 
+        }
         userNames.Remove(currentUserName);
         ViewBag.Users = new SelectList(userNames);
         return View();

@@ -14,11 +14,16 @@
                     <h4>Create Conversation</h4>
                 </div>
                 <div class="row">
+                    <p>Select person to start conversation with</p>
+                </div>
+                <div class="row">
                     <form method="post">
                         <select name="username" asp-items="@(ViewBag.Users as SelectList)"></select>
-                        dsghjkl
                         <input type="submit" class="btn btn-success" value="Create"/>
                     </form>
+                </div>
+                <div class="row text-center">
+                    <a class="nav-link text-dark" asp-controller="Message" asp-action="MessageBox">Go to message box</a>
                 </div>
                 
             </div>

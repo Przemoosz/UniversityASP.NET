@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model FirstProject.Models.Information
+@{
+    ViewData["Title"] = "Information - Create";
+    Layout = "_Layout";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="container">
+                <div class="row text-center border-bottom border-2">
+                    <h5>Create Information</h5>
+                </div>
+                <form method="post">
+                    <div class="row mt-3">
+                        <label asp-for="Title" class="control-label"></label>
+                        <input asp-for="Title" class="form-control"/>
+                        <span asp-validation-for="Title"></span>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="row mt-3">
+                            <label asp-for="Description" class="control-label"></label>
+                            <input asp-for="Description" class="form-control"/>
+                            <span asp-validation-for="Description"></span>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="row mt-3">
+                            <label class="control-label">Group</label>
+                            @if ((ViewBag.Roles as IEnumerable<IdentityRole>) is not null)
+                            {
+                                <table class="table table-borderless">
+                                    @{
+                                        IEnumerable<IdentityRole> roles = (ViewBag.Roles as IEnumerable<IdentityRole>)!;
+                                        foreach (IdentityRole role in roles)
+                                        {
+                                            <tr>
+                                                <td class="text-start">
+                                                    <input type="checkbox" name="selectedRoles" value="@role.Id"/>
+                                                    @role.Name
+                                                </td>
+                                                @* <td class="text-start"> *@
+                                                @*      *@
+                                                @* </td> *@
+                                            </tr>
+                                        } 
+                                    }
+                                </table>
+                            }
+                            @* <input type="checkbox"/> *@
+                            
+                            @* @if ((ViewBag.roleSelectList as SelectList) is not null) *@
+                            @* { *@
+                            @*     <select name="selectedRole" asp-items="@(ViewBag.roleSelectList as SelectList)" class="form-control"> *@
+                            @*         <option value="null">--------</option> *@
+                            @*     </select> *@
+                            @* } *@
+                            
+                            @* <span asp-validation-for="Description"></span> *@
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input type="submit" class="btn btn-primary" value="Send"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-2"></div>
+        
+        
+    </div>
+</div>

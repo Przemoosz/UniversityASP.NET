@@ -13,4 +13,8 @@ public class ApplicationUser: IdentityUser
     public IEnumerable<Message>? Messages { get; set; }
     
     public IEnumerable<MessageBox>? MessageBoxes { get; set; }
+    
+    public int? InformationBoxId { get; set; }
+    
+    public InformationBox? InformationBox { get; set; }
 }

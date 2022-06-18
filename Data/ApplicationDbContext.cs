@@ -32,6 +32,10 @@ namespace FirstProject.Data
         public DbSet<FirstProject.Models.Message> Messages { get; set; }
         
         public DbSet<FirstProject.Models.MessageBox> MessageBox { get; set; }
+        
+        public DbSet<FirstProject.Models.InformationBox> InformationBox { get; set; }
+        
+        public DbSet<FirstProject.Models.Information> Information { get; set; }
     }
 
 
